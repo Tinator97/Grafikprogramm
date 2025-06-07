@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 public class Fenster extends JFrame {
     //Klassenvariablen
@@ -14,6 +16,7 @@ public class Fenster extends JFrame {
         private JMenuItem neu, laden, speichern, beenden, rueckgaengig;
         private JToolBar toolBar;
         private JButton linie, rechteck, ellipse, radierer;
+        private JLabel labelWerkzeuge, labelFarben;
 
     //Konstruktor
     public Fenster (String fenstertitel) {
@@ -48,8 +51,9 @@ public class Fenster extends JFrame {
         this.setVisible(true);
     }
 
+    // Erstellen der MenuBar mit den einzelnen Untermenüs und Items inkl. Symbolen und ShortCuts
+    // Mit F10 kann die MenuBar auch mit der Tastatur gesteuert werden
     private void erstelleMenuBar() {
-        // Erstellen der MenuBar mit den einzelnen Untermenüs und Items inkl. Symbolen
         menuBar = new JMenuBar();
         datei = new JMenu("Datei");
         bearbeiten = new JMenu("Bearbeiten");
@@ -65,6 +69,14 @@ public class Fenster extends JFrame {
         //beenden.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/"));
         rueckgaengig.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/redo16.gif"));
 
+        neu.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
+        laden.setAccelerator(KeyStroke.getKeyStroke('L', InputEvent.CTRL_DOWN_MASK));
+        speichern.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
+        //beenden.setAccelerator(KeyStroke.getKeyStroke('', InputEvent.CTRL_DOWN_MASK));
+        rueckgaengig.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
+        datei.setMnemonic('D');
+        bearbeiten.setMnemonic('B');
+
         datei.add(neu);
         datei.add(laden);
         datei.add(speichern);
@@ -77,29 +89,38 @@ public class Fenster extends JFrame {
         setJMenuBar(menuBar);
     }
 
+    // Erstellen der SymbolBar mit den einzelnen Buttons für Werkzeuge inkl. Symbolen und ShortCuts
     private void erstelleSymbolBar() {
-        // Erstellen der SymbolBar mit den einzelnen Buttons für Werkzeuge inkl. Symbolen
         toolBar = new JToolBar();
+        labelWerkzeuge = new JLabel("Werkzeuge");
         linie = new JButton();
         rechteck = new JButton();
         ellipse = new JButton();
         radierer = new JButton();
+        labelFarben = new JLabel("Farben");
 
         linie.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/linie64.gif"));
         rechteck.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/rechteck64.gif"));
         ellipse.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/ellipse64.gif"));
         radierer.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/linie64.gif"));
 
+        linie.setMnemonic('L');
+        rechteck.setMnemonic('R');
+        ellipse.setMnemonic('C');
+        radierer.setMnemonic('E');
+
+        toolBar.add(labelWerkzeuge);
         toolBar.add(linie);
         toolBar.add(rechteck);
         toolBar.add(ellipse);
         toolBar.add(radierer);
+        toolBar.add(labelFarben);
 
         this.add(toolBar, BorderLayout.NORTH);
     }
 
+    //Setzen von ActionCommands und Listenern
     private void erstelleActions() {
-        //Setzen von ActionCommands und Listenern
         neu.setActionCommand("neu");
         laden.setActionCommand("laden");
         speichern.setActionCommand("speichern");
@@ -119,6 +140,7 @@ public class Fenster extends JFrame {
         radierer.addActionListener(new SchaltflaecheListener());
     }
 
+    //Klasse zum Ausführen von Befehlen nach bestimmten Ereignissen
     class SchaltflaecheListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
