@@ -11,13 +11,12 @@ public class Panel extends JPanel {
     private Graphics2D graphics2D;
 
     //Konstruktor
-    public Panel (int breite, int hoehe) {
+    public Panel () {
         //Größe und Farbe des Panels
-        this.setPreferredSize(new Dimension(breite, hoehe));
-        this.setBackground(Color.GRAY);
 
-        bild = new BufferedImage(breite, hoehe, BufferedImage.TYPE_INT_RGB);
+        this.setBackground(Color.BLUE);
+
+        bild = new BufferedImage(13, 13, BufferedImage.TYPE_INT_RGB);
         graphics2D = (Graphics2D) bild.getGraphics();
     }
-
 }
