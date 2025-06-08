@@ -37,7 +37,7 @@ public class Fenster extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Hinzufügen des Panels - der Zeichenfläche
-        panel = new Panel();
+        panel = new Panel(breite, hoehe);
         this.add(panel, BorderLayout.CENTER);
 
         //Erstellen weiterer UI-Elemente
