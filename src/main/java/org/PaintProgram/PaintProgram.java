@@ -1,8 +1,8 @@
-package org.Grafikprogramm;
+package org.PaintProgram;
 
-public class Grafikprogramm {
+public class PaintProgram {
     public static void main(String[] args) {
         //Erstellen einer Instanz "Fenster" - Starten des Programms
-        Fenster fenster = new Fenster("Name der Datei");
+        Frame frame = new Frame("Name der Datei");
     }
 }
