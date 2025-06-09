@@ -3,7 +3,6 @@ package org.PaintProgram;
 //importieren der benötigten Klassen
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 
 public class PaintPanel extends JPanel {
@@ -12,12 +11,16 @@ public class PaintPanel extends JPanel {
     private Graphics2D g2Image, g2;
     private String tool;
     private Color color;
+    private Point lastMousePosition;
 
     //Setter für Farbe
     public void setColor(Color color) {
         this.color = color;
-        g2Image.fillRect(10, 10, 100, 100);
-        repaint();
+    }
+
+    //Setter für lastMousePosition
+    public void setLastMousePosition(Point point) {
+        this.lastMousePosition = point;
     }
 
     //Konstruktor
@@ -30,7 +33,9 @@ public class PaintPanel extends JPanel {
 
         //Initialisierung vom ausgewählten Werkzeug und der Farbe
         color = Color.BLACK;
-        tool = "line";
+        tool = "brush";
+
+        lastMousePosition = new Point(0,0);
     }
 
     //Methode zum Zeichnen auf der Zeichenoberfläche
@@ -42,8 +47,15 @@ public class PaintPanel extends JPanel {
         g2.drawImage(picture, 0, 0, null);
 
         g2Image.setColor(color);
-        g2Image.fillRect(10, 10, 100, 100);
+    }
 
 
+
+    public void paint (Point actualMousePosition) {
+        //g2Image.fillOval(x,y,10,10);
+        g2Image.drawLine(lastMousePosition.x, lastMousePosition.y, actualMousePosition.x, actualMousePosition.y);
+        lastMousePosition.x = actualMousePosition.x;
+        lastMousePosition.y = actualMousePosition.y;
+        repaint();
     }
 }

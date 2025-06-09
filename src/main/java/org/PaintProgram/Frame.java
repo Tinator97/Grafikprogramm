@@ -3,9 +3,7 @@ package org.PaintProgram;
 //importieren der benötigten Klassen
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
+import java.awt.event.*;
 
 public class Frame extends JFrame {
     //Klassenvariablen
@@ -14,7 +12,7 @@ public class Frame extends JFrame {
         private JMenu fileMenu, editMenu;
         private JMenuItem newItem, loadItem, saveItem, closeItem, redoItem;
         private JToolBar toolBar;
-        private JButton lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton;
+        private JButton brushButton, lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton;
         private JLabel toolsLabel, colorsLabel;
 
     //Konstruktor
@@ -35,9 +33,11 @@ public class Frame extends JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //Hinzufügen des Panels - der Zeichenfläche
+        //Hinzufügen des Panels - der Zeichenfläche und erstellen der MouseListener
         paintPanel = new PaintPanel(width, height);
         this.add(paintPanel, BorderLayout.CENTER);
+        paintPanel.addMouseListener(new MouseListener());
+        paintPanel.addMouseMotionListener(new MouseMotionListener());
 
         //Erstellen weiterer UI-Elemente
         createMenuBar();
@@ -92,6 +92,7 @@ public class Frame extends JFrame {
     private void createSymbolBar() {
         toolBar = new JToolBar();
         toolsLabel = new JLabel("Werkzeuge");
+        brushButton = new JButton();
         lineButton = new JButton();
         rectangleButton = new JButton();
         ellipseButton = new JButton();
@@ -101,10 +102,11 @@ public class Frame extends JFrame {
         redButton = new JButton();
         blueButton = new JButton();
 
+        brushButton.setText("Pinsel");
         lineButton.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/linie64.gif"));
         rectangleButton.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/rechteck64.gif"));
         ellipseButton.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/ellipse64.gif"));
-        eraserButton.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/linie64.gif"));
+        eraserButton.setText("Radierer");
         blackButton.setText("schwarz");
         redButton.setText("rot");
         blueButton.setText("blau");
@@ -115,6 +117,7 @@ public class Frame extends JFrame {
         eraserButton.setMnemonic('E');
 
         toolBar.add(toolsLabel);
+        toolBar.add(brushButton);
         toolBar.add(lineButton);
         toolBar.add(rectangleButton);
         toolBar.add(ellipseButton);
@@ -133,6 +136,7 @@ public class Frame extends JFrame {
         loadItem.setActionCommand("load");
         saveItem.setActionCommand("save");
         closeItem.setActionCommand("close");
+        brushButton.setActionCommand("brush");
         lineButton.setActionCommand("line");
         rectangleButton.setActionCommand("rect");
         ellipseButton.setActionCommand("ellipse");
@@ -145,6 +149,7 @@ public class Frame extends JFrame {
         loadItem.addActionListener(new ButtonListener());
         saveItem.addActionListener(new ButtonListener());
         closeItem.addActionListener(new ButtonListener());
+        brushButton.addActionListener(new ButtonListener());
         lineButton.addActionListener(new ButtonListener());
         rectangleButton.addActionListener(new ButtonListener());
         ellipseButton.addActionListener(new ButtonListener());
@@ -154,14 +159,32 @@ public class Frame extends JFrame {
         blueButton.addActionListener(new ButtonListener());
     }
 
-    //Klasse zum Ausführen von Befehlen nach bestimmten Ereignissen
+    //Klasse zum Ausführen von Befehlen nach Knopdruck
     class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("close")) System.exit(0);
+            if (e.getActionCommand().equals("eraser")) paintPanel.setColor(Color.WHITE);
             if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
             if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
             if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
+        }
+    }
+
+    //Klasse zum Ausführen von Befehlen nach Mausklick
+    class MouseListener extends MouseAdapter {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            paintPanel.setLastMousePosition(e.getPoint());
+            paintPanel.paint(e.getPoint());
+        }
+    }
+
+    //Klasse zum Ausführen von Befehlen beim Ziehen der Maus
+    class MouseMotionListener extends MouseMotionAdapter {
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            paintPanel.paint(e.getPoint());
         }
     }
 }
