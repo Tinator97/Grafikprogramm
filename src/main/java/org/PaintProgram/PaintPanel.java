@@ -10,12 +10,26 @@ public class PaintPanel extends JPanel {
     private BufferedImage picture;
     private Graphics2D g2Image, g2;
     private String tool;
-    private Color color;
     private Point lastMousePosition;
+
+    //Getter für Werkzeug
+    public String getTool() {
+        return tool;
+    }
+
+    //Setter für Werkzeug
+    public void setTool(String tool) {
+        this.tool = tool;
+    }
 
     //Setter für Farbe
     public void setColor(Color color) {
-        this.color = color;
+        g2Image.setColor(color);
+    }
+
+    //Setter für Strichdicke
+    public void setColor(int stroke) {
+        g2Image.setStroke(new BasicStroke(stroke));
     }
 
     //Setter für lastMousePosition
@@ -31,11 +45,10 @@ public class PaintPanel extends JPanel {
         g2Image.setColor(Color.WHITE);
         g2Image.fillRect(0, 0, width, height);
 
-        //Initialisierung vom ausgewählten Werkzeug und der Farbe
-        color = Color.BLACK;
+        //Initialisierung vom ausgewählten Werkzeug, der Farbe und der Strichdicke
+        g2Image.setColor(Color.BLACK);
         tool = "brush";
-
-        lastMousePosition = new Point(0,0);
+        g2Image.setStroke(new BasicStroke(5));
     }
 
     //Methode zum Zeichnen auf der Zeichenoberfläche
@@ -45,17 +58,59 @@ public class PaintPanel extends JPanel {
         super.paintComponent(g);
         g2 = (Graphics2D) g;
         g2.drawImage(picture, 0, 0, null);
-
-        g2Image.setColor(color);
     }
 
 
 
-    public void paint (Point actualMousePosition) {
-        //g2Image.fillOval(x,y,10,10);
+    public void brush (Point actualMousePosition) {
         g2Image.drawLine(lastMousePosition.x, lastMousePosition.y, actualMousePosition.x, actualMousePosition.y);
         lastMousePosition.x = actualMousePosition.x;
         lastMousePosition.y = actualMousePosition.y;
+        repaint();
+    }
+
+    public void line (Point actualMousePosition) {
+        g2Image.drawLine(lastMousePosition.x, lastMousePosition.y, actualMousePosition.x, actualMousePosition.y);
+        repaint();
+    }
+
+    public void rectangle (Point actualMousePosition) {
+        int width = actualMousePosition.x - lastMousePosition.x;
+        int height = actualMousePosition.y - lastMousePosition.y;
+        int temp;
+        if (width < 0) {
+            temp = actualMousePosition.x;
+            actualMousePosition.x = lastMousePosition.x;
+            lastMousePosition.x = temp;
+            width = -width;
+        }
+        if (height < 0) {
+            temp = actualMousePosition.y;
+            actualMousePosition.y = lastMousePosition.y;
+            lastMousePosition.y = temp;
+            height = -height;
+        }
+        g2Image.drawRect(lastMousePosition.x, lastMousePosition.y, width, height);
+        repaint();
+    }
+
+    public void ellipse (Point actualMousePosition) {
+        int width = actualMousePosition.x - lastMousePosition.x;
+        int height = actualMousePosition.y - lastMousePosition.y;
+        int temp;
+        if (width < 0) {
+            temp = actualMousePosition.x;
+            actualMousePosition.x = lastMousePosition.x;
+            lastMousePosition.x = temp;
+            width = -width;
+        }
+        if (height < 0) {
+            temp = actualMousePosition.y;
+            actualMousePosition.y = lastMousePosition.y;
+            lastMousePosition.y = temp;
+            height = -height;
+        }
+        g2Image.drawOval(lastMousePosition.x, lastMousePosition.y, width, height);
         repaint();
     }
 }

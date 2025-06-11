@@ -138,7 +138,7 @@ public class Frame extends JFrame {
         closeItem.setActionCommand("close");
         brushButton.setActionCommand("brush");
         lineButton.setActionCommand("line");
-        rectangleButton.setActionCommand("rect");
+        rectangleButton.setActionCommand("rectangle");
         ellipseButton.setActionCommand("ellipse");
         eraserButton.setActionCommand("eraser");
         blackButton.setActionCommand("black");
@@ -164,7 +164,14 @@ public class Frame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("close")) System.exit(0);
-            if (e.getActionCommand().equals("eraser")) paintPanel.setColor(Color.WHITE);
+            if (e.getActionCommand().equals("brush")) paintPanel.setTool("brush");;
+            if (e.getActionCommand().equals("line")) paintPanel.setTool("line");;
+            if (e.getActionCommand().equals("rectangle")) paintPanel.setTool("rectangle");;
+            if (e.getActionCommand().equals("ellipse")) paintPanel.setTool("ellipse");;
+            if (e.getActionCommand().equals("eraser")) {
+                paintPanel.setTool("brush");
+                paintPanel.setColor(Color.WHITE);
+            }
             if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
             if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
             if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
@@ -176,7 +183,15 @@ public class Frame extends JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             paintPanel.setLastMousePosition(e.getPoint());
-            paintPanel.paint(e.getPoint());
+            if (paintPanel.getTool().equals("brush")) paintPanel.brush(e.getPoint());
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (paintPanel.getTool().equals("brush")) paintPanel.brush(e.getPoint());
+            if (paintPanel.getTool().equals("rectangle")) paintPanel.rectangle(e.getPoint());
+            if (paintPanel.getTool().equals("ellipse")) paintPanel.ellipse(e.getPoint());
+            if (paintPanel.getTool().equals("line")) paintPanel.line(e.getPoint());
         }
     }
 
@@ -184,7 +199,7 @@ public class Frame extends JFrame {
     class MouseMotionListener extends MouseMotionAdapter {
         @Override
         public void mouseDragged(MouseEvent e) {
-            paintPanel.paint(e.getPoint());
+            if (paintPanel.getTool().equals("brush")) paintPanel.brush(e.getPoint());
         }
     }
 }
