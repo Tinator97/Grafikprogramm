@@ -40,12 +40,7 @@ public class Frame extends JFrame {
 
 
         //Hinzufügen des Panels - der Zeichenfläche und erstellen der MouseListener
-        int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
-        int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
-        paintPanel = new PaintPanel(width, height);
-        this.add(paintPanel, BorderLayout.CENTER);
-        paintPanel.addMouseListener(new MouseListener());
-        paintPanel.addMouseMotionListener(new MouseMotionListener());
+        createPanel();
 
         //Erstellen weiterer UI-Elemente
         createMenuBar();
@@ -174,6 +169,17 @@ public class Frame extends JFrame {
         strokeField.addActionListener(new ButtonListener());
     }
 
+
+    private void createPanel () {
+        int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
+        int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
+        paintPanel = new PaintPanel(width, height);
+        this.add(paintPanel, BorderLayout.CENTER);
+        revalidate();
+        paintPanel.addMouseListener(new MouseListener());
+        paintPanel.addMouseMotionListener(new MouseMotionListener());
+    }
+
     //Klasse zum Ausführen von Befehlen nach Knopdruck
     class ButtonListener implements ActionListener {
 
@@ -194,6 +200,7 @@ public class Frame extends JFrame {
                 paintPanel.setColor(Color.WHITE);
             }
             if (e.getActionCommand().equals("stroke")) paintPanel.setStroke(parseInt(strokeField.getText()));
+            if (e.getActionCommand().equals("new")) createPanel();
             if (e.getActionCommand().equals("close")) System.exit(0);
         }
     }
