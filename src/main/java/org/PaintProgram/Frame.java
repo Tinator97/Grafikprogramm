@@ -27,21 +27,21 @@ public class Frame extends JFrame {
         //Erstellen des Fensters
         super(frameTitel);
 
-
         //Größe des Fensters - Ermitteln der Auflösung des Betriebssystems
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        int width = graphicsDevice.getDisplayMode().getWidth();
-        int height = graphicsDevice.getDisplayMode().getHeight() - 50;
-        this.setSize(width, height);
+        this.setSize(graphicsDevice.getDisplayMode().getWidth(), graphicsDevice.getDisplayMode().getHeight() - 50);
 
         //Layout des Fensters
         //Fenstergröße fixieren
         //Beenden des Programms beim Schließen
         this.setLayout(new BorderLayout());
-        this.setResizable(false);
+        //this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
         //Hinzufügen des Panels - der Zeichenfläche und erstellen der MouseListener
+        int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
+        int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
         paintPanel = new PaintPanel(width, height);
         this.add(paintPanel, BorderLayout.CENTER);
         paintPanel.addMouseListener(new MouseListener());
