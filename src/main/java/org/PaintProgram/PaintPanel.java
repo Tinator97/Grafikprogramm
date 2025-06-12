@@ -17,6 +17,11 @@ public class PaintPanel extends JPanel {
         return tool;
     }
 
+    //Getter für Werkzeug
+    public Color getColor() {
+        return g2Image.getColor();
+    }
+
     //Setter für Werkzeug
     public void setTool(String tool) {
         this.tool = tool;
@@ -28,7 +33,7 @@ public class PaintPanel extends JPanel {
     }
 
     //Setter für Strichdicke
-    public void setColor(int stroke) {
+    public void setStroke(int stroke) {
         g2Image.setStroke(new BasicStroke(stroke));
     }
 
@@ -112,5 +117,9 @@ public class PaintPanel extends JPanel {
         }
         g2Image.drawOval(lastMousePosition.x, lastMousePosition.y, width, height);
         repaint();
+    }
+
+    public void erase (Point actualMousePosition) {
+        brush(actualMousePosition);
     }
 }

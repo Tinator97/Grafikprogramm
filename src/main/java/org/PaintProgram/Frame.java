@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import static java.lang.Integer.parseInt;
+
 public class Frame extends JFrame {
     //Klassenvariablen
         private PaintPanel paintPanel;
@@ -13,12 +15,18 @@ public class Frame extends JFrame {
         private JMenuItem newItem, loadItem, saveItem, closeItem, redoItem;
         private JToolBar toolBar;
         private JButton brushButton, lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton;
-        private JLabel toolsLabel, colorsLabel;
+        private JLabel toolsLabel, colorsLabel, strokeLabel;
+        private JTextField strokeField;
+        private Color lastColor;
+
+
+        private final String brush = "brush", line = "line", rectangle = "rectangle", ellipse = "ellipse", eraser = "eraser";
 
     //Konstruktor
     public Frame(String frameTitel) {
         //Erstellen des Fensters
         super(frameTitel);
+
 
         //Größe des Fensters - Ermitteln der Auflösung des Betriebssystems
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -101,6 +109,8 @@ public class Frame extends JFrame {
         blackButton = new JButton();
         redButton = new JButton();
         blueButton = new JButton();
+        strokeField = new JTextField("3");
+        strokeLabel = new JLabel("Strichdicke");
 
         brushButton.setText("Pinsel");
         lineButton.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/linie64.gif"));
@@ -110,6 +120,7 @@ public class Frame extends JFrame {
         blackButton.setText("schwarz");
         redButton.setText("rot");
         blueButton.setText("blau");
+        strokeField.setMaximumSize(new Dimension(40,30));
 
         lineButton.setMnemonic('L');
         rectangleButton.setMnemonic('R');
@@ -122,6 +133,8 @@ public class Frame extends JFrame {
         toolBar.add(rectangleButton);
         toolBar.add(ellipseButton);
         toolBar.add(eraserButton);
+        toolBar.add(strokeLabel);
+        toolBar.add(strokeField);
         toolBar.add(colorsLabel);
         toolBar.add(blackButton);
         toolBar.add(redButton);
@@ -136,14 +149,15 @@ public class Frame extends JFrame {
         loadItem.setActionCommand("load");
         saveItem.setActionCommand("save");
         closeItem.setActionCommand("close");
-        brushButton.setActionCommand("brush");
-        lineButton.setActionCommand("line");
-        rectangleButton.setActionCommand("rectangle");
-        ellipseButton.setActionCommand("ellipse");
-        eraserButton.setActionCommand("eraser");
+        brushButton.setActionCommand(brush);
+        lineButton.setActionCommand(line);
+        rectangleButton.setActionCommand(rectangle);
+        ellipseButton.setActionCommand(ellipse);
+        eraserButton.setActionCommand(eraser);
         blackButton.setActionCommand("black");
         redButton.setActionCommand("red");
         blueButton.setActionCommand("blue");
+        strokeField.setActionCommand("stroke");
 
         newItem.addActionListener(new ButtonListener());
         loadItem.addActionListener(new ButtonListener());
@@ -157,24 +171,30 @@ public class Frame extends JFrame {
         blackButton.addActionListener(new ButtonListener());
         redButton.addActionListener(new ButtonListener());
         blueButton.addActionListener(new ButtonListener());
+        strokeField.addActionListener(new ButtonListener());
     }
 
     //Klasse zum Ausführen von Befehlen nach Knopdruck
     class ButtonListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("close")) System.exit(0);
-            if (e.getActionCommand().equals("brush")) paintPanel.setTool("brush");;
-            if (e.getActionCommand().equals("line")) paintPanel.setTool("line");;
-            if (e.getActionCommand().equals("rectangle")) paintPanel.setTool("rectangle");;
-            if (e.getActionCommand().equals("ellipse")) paintPanel.setTool("ellipse");;
-            if (e.getActionCommand().equals("eraser")) {
-                paintPanel.setTool("brush");
-                paintPanel.setColor(Color.WHITE);
-            }
+            if (paintPanel.getTool().equals(eraser) && !e.getActionCommand().equals(eraser)) paintPanel.setColor(lastColor);
+            if (e.getActionCommand().equals(brush)) paintPanel.setTool(brush);
+            if (e.getActionCommand().equals(line)) paintPanel.setTool(line);
+            if (e.getActionCommand().equals(rectangle)) paintPanel.setTool(rectangle);
+            if (e.getActionCommand().equals(ellipse)) paintPanel.setTool(ellipse);
             if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
             if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
             if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
+
+            if (e.getActionCommand().equals(eraser) && !paintPanel.getTool().equals(eraser)) {
+                lastColor = paintPanel.getColor();
+                paintPanel.setTool(eraser);
+                paintPanel.setColor(Color.WHITE);
+            }
+            if (e.getActionCommand().equals("stroke")) paintPanel.setStroke(parseInt(strokeField.getText()));
+            if (e.getActionCommand().equals("close")) System.exit(0);
         }
     }
 
@@ -183,15 +203,16 @@ public class Frame extends JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             paintPanel.setLastMousePosition(e.getPoint());
-            if (paintPanel.getTool().equals("brush")) paintPanel.brush(e.getPoint());
+            if (paintPanel.getTool().equals(brush)) paintPanel.brush(e.getPoint());
+            if (paintPanel.getTool().equals(eraser)) paintPanel.erase(e.getPoint());
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            if (paintPanel.getTool().equals("brush")) paintPanel.brush(e.getPoint());
-            if (paintPanel.getTool().equals("rectangle")) paintPanel.rectangle(e.getPoint());
-            if (paintPanel.getTool().equals("ellipse")) paintPanel.ellipse(e.getPoint());
-            if (paintPanel.getTool().equals("line")) paintPanel.line(e.getPoint());
+            if (paintPanel.getTool().equals(brush)) paintPanel.brush(e.getPoint());
+            if (paintPanel.getTool().equals(rectangle)) paintPanel.rectangle(e.getPoint());
+            if (paintPanel.getTool().equals(ellipse)) paintPanel.ellipse(e.getPoint());
+            if (paintPanel.getTool().equals(line)) paintPanel.line(e.getPoint());
         }
     }
 
@@ -199,7 +220,8 @@ public class Frame extends JFrame {
     class MouseMotionListener extends MouseMotionAdapter {
         @Override
         public void mouseDragged(MouseEvent e) {
-            if (paintPanel.getTool().equals("brush")) paintPanel.brush(e.getPoint());
+            if (paintPanel.getTool().equals(brush)) paintPanel.brush(e.getPoint());
+            if (paintPanel.getTool().equals(eraser)) paintPanel.erase(e.getPoint());
         }
     }
 }
