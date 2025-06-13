@@ -72,7 +72,7 @@ public class Frame extends JFrame {
         menuBar.add(editMenu);
 
         newItem = new JMenuItem("Neu");
-        newItem.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/Add16.gif"));
+        newItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
         newItem.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newItem);
         newItem.setActionCommand("new");
@@ -85,7 +85,7 @@ public class Frame extends JFrame {
         loadItem.addActionListener(new ButtonListener());
 
         saveItem = new JMenuItem("Speichern");
-        saveItem.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/save16.gif"));
+        saveItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/save16.gif"));
         saveItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(saveItem);
         saveItem.setActionCommand("save");
@@ -97,7 +97,7 @@ public class Frame extends JFrame {
         closeItem.addActionListener(new ButtonListener());
 
         redoItem = new JMenuItem("Rückgängig");
-        redoItem.setIcon(new ImageIcon("bilder/toolbarButtonGraphics/general/redo16.gif"));
+        redoItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/redo16.gif"));
         redoItem.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
         editMenu.add(redoItem);
 
@@ -111,11 +111,11 @@ public class Frame extends JFrame {
         toolsLabel = new JLabel("Werkzeuge");
         toolBar.add(toolsLabel);
 
-        newButtonForSymbolbar(brushButton, "bilder/toolbarButtonGraphics/development/Bean24.gif", '0', brushString);
-        newButtonForSymbolbar(lineButton, "bilder/toolbarButtonGraphics/general/linie64.gif", '0', lineString);
-        newButtonForSymbolbar(rectangleButton, "bilder/toolbarButtonGraphics/general/rechteck64.gif", '0', rectangleString);
-        newButtonForSymbolbar(ellipseButton, "bilder/toolbarButtonGraphics/general/ellipse64.gif", '0', ellipseString);
-        newButtonForSymbolbar(eraserButton, "bilder/toolbarButtonGraphics/development/Bean24.gif", '0', eraserString);
+        newButtonForSymbolbar(brushButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', brushString);
+        newButtonForSymbolbar(lineButton, "icons/toolbarButtonGraphics/general/linie64.gif", '0', lineString);
+        newButtonForSymbolbar(rectangleButton, "icons/toolbarButtonGraphics/general/rechteck64.gif", '0', rectangleString);
+        newButtonForSymbolbar(ellipseButton, "icons/toolbarButtonGraphics/general/ellipse64.gif", '0', ellipseString);
+        newButtonForSymbolbar(eraserButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', eraserString);
 
         strokeLabel = new JLabel("Strichdicke");
         toolBar.add(strokeLabel);
@@ -129,9 +129,9 @@ public class Frame extends JFrame {
         colorsLabel = new JLabel("Farben");
         toolBar.add(colorsLabel);
 
-        newButtonForSymbolbar(blackButton, "bilder/toolbarButtonGraphics/development/Bean24.gif", '0', "black");
-        newButtonForSymbolbar(redButton, "bilder/toolbarButtonGraphics/development/Bean24.gif", '0', "red");
-        newButtonForSymbolbar(blueButton, "bilder/toolbarButtonGraphics/development/Bean24.gif", '0', "blue");
+        newButtonForSymbolbar(blackButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "black");
+        newButtonForSymbolbar(redButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "red");
+        newButtonForSymbolbar(blueButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "blue");
 
         this.add(toolBar, BorderLayout.NORTH);
     }
