@@ -120,17 +120,19 @@ public class Frame extends JFrame {
         toolsLabel = new JLabel("Werkzeuge");
         toolBar.add(toolsLabel);
 
-        newButtonForSymbolbar(brushButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', brushString);
-        newButtonForSymbolbar(lineButton, "icons/toolbarButtonGraphics/general/linie64.gif", '0', lineString);
-        newButtonForSymbolbar(rectangleButton, "icons/toolbarButtonGraphics/general/rechteck64.gif", '0', rectangleString);
-        newButtonForSymbolbar(ellipseButton, "icons/toolbarButtonGraphics/general/ellipse64.gif", '0', ellipseString);
-        newButtonForSymbolbar(eraserButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', eraserString);
+        newButtonForSymbolbar(brushButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', brushString, "Pinsel");
+        newButtonForSymbolbar(lineButton, "icons/toolbarButtonGraphics/general/linie64.gif", '0', lineString, "Linie");
+        newButtonForSymbolbar(rectangleButton, "icons/toolbarButtonGraphics/general/rechteck64.gif", '0', rectangleString, "Rechteck");
+        newButtonForSymbolbar(ellipseButton, "icons/toolbarButtonGraphics/general/ellipse64.gif", '0', ellipseString, "Ellipse");
+        newButtonForSymbolbar(eraserButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', eraserString, "Radierer");
 
         strokeLabel = new JLabel("Strichdicke");
         toolBar.add(strokeLabel);
 
         strokeField = new JTextField("3");
         strokeField.setMaximumSize(new Dimension(40,30));
+        strokeField.setToolTipText("Strichdicke in Pixeln");
+        strokeField.setHorizontalAlignment(JTextField.CENTER);
         toolBar.add(strokeField);
         strokeField.setActionCommand("stroke");
         strokeField.addActionListener(new ButtonListener());
@@ -138,17 +140,18 @@ public class Frame extends JFrame {
         colorsLabel = new JLabel("Farben");
         toolBar.add(colorsLabel);
 
-        newButtonForSymbolbar(blackButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "black");
-        newButtonForSymbolbar(redButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "red");
-        newButtonForSymbolbar(blueButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "blue");
+        newButtonForSymbolbar(blackButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "black", "schwarz");
+        newButtonForSymbolbar(redButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "red", "rot");
+        newButtonForSymbolbar(blueButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "blue", "blau");
 
         this.add(toolBar, BorderLayout.NORTH);
     }
 
-    private void newButtonForSymbolbar (JButton button, String imageIconFilename, Character mnemonic, String actionCommand) {
+    private void newButtonForSymbolbar (JButton button, String imageIconFilename, Character mnemonic, String actionCommand, String tooltip) {
         button = new JButton();
         button.setIcon(new ImageIcon(imageIconFilename));
         button.setMnemonic(mnemonic);
+        button.setToolTipText(tooltip);
         toolBar.add(button);
         button.setActionCommand(actionCommand);
         button.addActionListener(new ButtonListener());
