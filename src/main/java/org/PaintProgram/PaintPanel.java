@@ -136,4 +136,26 @@ public class PaintPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Fehler beim Laden");
         }
     }
+
+    public void reset () {
+        g2Image.setColor(Color.WHITE);
+        g2Image.fillRect(0, 0, getWidth(), getHeight());
+        g2Image.setColor(Color.BLACK);
+        tool = "brush";
+        g2Image.setStroke(new BasicStroke(5));
+        repaint();
+    }
+
+    public void reset (int width, int height) {
+        setPreferredSize(new Dimension(width, height));
+        picture = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        g2Image = (Graphics2D) picture.createGraphics();
+        setSize(new Dimension(width, height));
+        g2Image.setColor(Color.WHITE);
+        g2Image.fillRect(0, 0, width, height);
+        g2Image.setColor(Color.BLACK);
+        tool = "brush";
+        g2Image.setStroke(new BasicStroke(5));
+        repaint();
+    }
 }

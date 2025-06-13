@@ -14,7 +14,7 @@ public class Frame extends JFrame {
         private PaintPanel paintPanel;
         private JMenuBar menuBar;
         private JMenu fileMenu, editMenu;
-        private JMenuItem newItem, loadItem, saveItem, closeItem, redoItem;
+        private JMenuItem newStandardItem, newCustomItem, loadItem, saveItem, closeItem, redoItem;
         private JToolBar toolBar;
         private JButton brushButton, lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton;
         private JLabel toolsLabel, colorsLabel, strokeLabel;
@@ -33,18 +33,20 @@ public class Frame extends JFrame {
 
         //Größe des Fensters - Ermitteln der Auflösung des Betriebssystems
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        this.setSize(graphicsDevice.getDisplayMode().getWidth(), graphicsDevice.getDisplayMode().getHeight() - 50);
+        this.setSize(graphicsDevice.getDisplayMode().getWidth()/2, graphicsDevice.getDisplayMode().getHeight()/2);
+        this.setExtendedState(MAXIMIZED_BOTH);
 
         //Layout des Fensters
-        //Fenstergröße fixieren
         //Beenden des Programms beim Schließen
         this.setLayout(new BorderLayout());
-        //this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
         //Hinzufügen des Panels - der Zeichenfläche und erstellen der MouseListener
-        createPanel();
+        paintPanel = new PaintPanel(1600, 900);
+        this.add(paintPanel, BorderLayout.CENTER);
+        paintPanel.addMouseListener(new MouseListener());
+        paintPanel.addMouseMotionListener(new MouseMotionListener());
 
         //Erstellen Menübar und Symbolleiste inkl. interaktiver Elemente
         createMenuBar();
@@ -71,12 +73,19 @@ public class Frame extends JFrame {
         editMenu.setMnemonic('B');
         menuBar.add(editMenu);
 
-        newItem = new JMenuItem("Neu");
-        newItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
-        newItem.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(newItem);
-        newItem.setActionCommand("new");
-        newItem.addActionListener(new ButtonListener());
+        newStandardItem = new JMenuItem("Neu");
+        newStandardItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
+        newStandardItem.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(newStandardItem);
+        newStandardItem.setActionCommand("newStandard");
+        newStandardItem.addActionListener(new ButtonListener());
+
+        newCustomItem = new JMenuItem("Neu (Blattgröße anpassen)");
+        newCustomItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
+        newCustomItem.setAccelerator(KeyStroke.getKeyStroke('M', InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(newCustomItem);
+        newCustomItem.setActionCommand("newCustom");
+        newCustomItem.addActionListener(new ButtonListener());
 
         loadItem = new JMenuItem("Laden");
         loadItem.setAccelerator(KeyStroke.getKeyStroke('L', InputEvent.CTRL_DOWN_MASK));
@@ -145,16 +154,6 @@ public class Frame extends JFrame {
         button.addActionListener(new ButtonListener());
     }
 
-    private void createPanel () {
-        int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
-        int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
-        paintPanel = new PaintPanel(width, height);
-        this.add(paintPanel, BorderLayout.CENTER);
-        revalidate();
-        paintPanel.addMouseListener(new MouseListener());
-        paintPanel.addMouseMotionListener(new MouseMotionListener());
-    }
-
     //Klasse zum Ausführen von Befehlen nach Knopdruck
     class ButtonListener implements ActionListener {
 
@@ -177,7 +176,12 @@ public class Frame extends JFrame {
             if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
             if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
 
-            if (e.getActionCommand().equals("new")) createPanel();
+            if (e.getActionCommand().equals("newStandard")) paintPanel.reset();;
+            if (e.getActionCommand().equals("newCustom")) {
+                int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
+                int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
+                paintPanel.reset(width, height);
+            }
             if (e.getActionCommand().equals("close")) System.exit(0);
             if (e.getActionCommand().equals("save")) {
                 fileChooser.showSaveDialog(null);
