@@ -1,14 +1,11 @@
 package org.PaintProgram;
 
 //importieren der benötigten Klassen
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import static java.lang.Integer.parseInt;
 
@@ -164,6 +161,7 @@ public class Frame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (paintPanel.getTool().equals(eraserString) && !e.getActionCommand().equals(eraserString)) paintPanel.setColor(lastColor);
+
             if (e.getActionCommand().equals(brushString)) paintPanel.setTool(brushString);
             if (e.getActionCommand().equals(lineString)) paintPanel.setTool(lineString);
             if (e.getActionCommand().equals(rectangleString)) paintPanel.setTool(rectangleString);

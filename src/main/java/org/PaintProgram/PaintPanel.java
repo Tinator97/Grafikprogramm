@@ -15,32 +15,24 @@ public class PaintPanel extends JPanel {
     private String tool;
     private Point lastMousePosition;
 
-    //Getter für Werkzeug
+    //Getter
     public String getTool() {
         return tool;
     }
-
-    //Getter für Farbe
     public Color getColor() {
         return g2Image.getColor();
     }
 
-    //Setter für Werkzeug
+    //Setter
     public void setTool(String tool) {
         this.tool = tool;
     }
-
-    //Setter für Farbe
     public void setColor(Color color) {
         g2Image.setColor(color);
     }
-
-    //Setter für Strichdicke
     public void setStroke(int stroke) {
         g2Image.setStroke(new BasicStroke(stroke));
     }
-
-    //Setter für lastMousePosition
     public void setLastMousePosition(Point point) {
         this.lastMousePosition = point;
     }
@@ -67,8 +59,6 @@ public class PaintPanel extends JPanel {
         g2 = (Graphics2D) g;
         g2.drawImage(picture, 0, 0, null);
     }
-
-
 
     public void brush (Point actualMousePosition) {
         g2Image.drawLine(lastMousePosition.x, lastMousePosition.y, actualMousePosition.x, actualMousePosition.y);
