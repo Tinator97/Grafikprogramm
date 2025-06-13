@@ -11,16 +11,17 @@ import static java.lang.Integer.parseInt;
 
 public class Frame extends JFrame {
     //Klassenvariablen
-        private PaintPanel paintPanel;
-        private JMenuBar menuBar;
-        private JMenu fileMenu, editMenu;
-        private JMenuItem newStandardItem, newCustomItem, loadItem, saveItem, closeItem, redoItem;
-        private JToolBar toolBar;
-        private JButton brushButton, lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton;
-        private JLabel toolsLabel, colorsLabel, strokeLabel;
-        private JTextField strokeField;
-        private Color lastColor;
-        private JFileChooser fileChooser;
+    private PaintPanel paintPanel;
+    private JMenuBar menuBar;
+    private JMenu fileMenu, toolMenu;
+    private JMenuItem newStandardItem, newCustomItem, loadItem, saveItem, closeItem, brushItem, lineItem, rectangleItem, ellipseItem, eraserItem;
+    private JToolBar toolBar;
+    private JButton brushButton, lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton, whiteButton, yellowButton, cyanButton,
+            greenButton, magentaButton, orangeButton, pinkButton, lightgrayButton, grayButton, darkgrayButton;
+    private JLabel toolsLabel, colorsLabel, strokeLabel;
+    private JTextField strokeField;
+    private Color lastColor;
+    private JFileChooser fileChooser;
 
 
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
@@ -69,9 +70,9 @@ public class Frame extends JFrame {
         fileMenu.setMnemonic('D');
         menuBar.add(fileMenu);
 
-        editMenu = new JMenu("Bearbeiten");
-        editMenu.setMnemonic('B');
-        menuBar.add(editMenu);
+        toolMenu = new JMenu("Werkzeuge");
+        toolMenu.setMnemonic('B');
+        menuBar.add(toolMenu);
 
         newStandardItem = new JMenuItem("Neu");
         newStandardItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
@@ -105,10 +106,30 @@ public class Frame extends JFrame {
         closeItem.setActionCommand("close");
         closeItem.addActionListener(new ButtonListener());
 
-        redoItem = new JMenuItem("Rückgängig");
-        redoItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/redo16.gif"));
-        redoItem.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(redoItem);
+        brushItem = new JMenuItem("Pinsel");
+        toolMenu.add(brushItem);
+        brushItem.setActionCommand(brushString);
+        brushItem.addActionListener(new ButtonListener());
+
+        lineItem = new JMenuItem("Linie");
+        toolMenu.add(lineItem);
+        lineItem.setActionCommand(lineString);
+        lineItem.addActionListener(new ButtonListener());
+
+        rectangleItem = new JMenuItem("Rechteck");
+        toolMenu.add(rectangleItem);
+        rectangleItem.setActionCommand(rectangleString);
+        rectangleItem.addActionListener(new ButtonListener());
+
+        ellipseItem = new JMenuItem("Ellipse");
+        toolMenu.add(ellipseItem);
+        ellipseItem.setActionCommand(ellipseString);
+        ellipseItem.addActionListener(new ButtonListener());
+
+        eraserItem = new JMenuItem("Radierer");
+        toolMenu.add(eraserItem);
+        eraserItem.setActionCommand(eraserString);
+        eraserItem.addActionListener(new ButtonListener());
 
         setJMenuBar(menuBar);
     }
@@ -143,6 +164,16 @@ public class Frame extends JFrame {
         newButtonForSymbolbar(blackButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "black", "schwarz");
         newButtonForSymbolbar(redButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "red", "rot");
         newButtonForSymbolbar(blueButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "blue", "blau");
+        newButtonForSymbolbar(yellowButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "yellow", "gelb");
+        newButtonForSymbolbar(whiteButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "white", "weiß");
+        newButtonForSymbolbar(cyanButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "cyan", "cyan");
+        newButtonForSymbolbar(greenButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "green", "grün");
+        newButtonForSymbolbar(magentaButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "magenta", "magenta");
+        newButtonForSymbolbar(orangeButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "orange", "orange");
+        newButtonForSymbolbar(pinkButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "pink", "pink");
+        newButtonForSymbolbar(lightgrayButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "lightgray", "hellgrau");
+        newButtonForSymbolbar(grayButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "gray", "grau");
+        newButtonForSymbolbar(darkgrayButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "darkgray", "dunkelgrau");
 
         this.add(toolBar, BorderLayout.NORTH);
     }
@@ -178,6 +209,16 @@ public class Frame extends JFrame {
             if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
             if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
             if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
+            if (e.getActionCommand().equals("yellow")) paintPanel.setColor(Color.YELLOW);
+            if (e.getActionCommand().equals("white")) paintPanel.setColor(Color.WHITE);
+            if (e.getActionCommand().equals("cyan")) paintPanel.setColor(Color.CYAN);
+            if (e.getActionCommand().equals("green")) paintPanel.setColor(Color.GREEN);
+            if (e.getActionCommand().equals("magenta")) paintPanel.setColor(Color.MAGENTA);
+            if (e.getActionCommand().equals("orange")) paintPanel.setColor(Color.ORANGE);
+            if (e.getActionCommand().equals("pink")) paintPanel.setColor(Color.PINK);
+            if (e.getActionCommand().equals("lightgray")) paintPanel.setColor(Color.LIGHT_GRAY);
+            if (e.getActionCommand().equals("gray")) paintPanel.setColor(Color.GRAY);
+            if (e.getActionCommand().equals("darkgray")) paintPanel.setColor(Color.DARK_GRAY);
 
             if (e.getActionCommand().equals("newStandard")) paintPanel.reset();;
             if (e.getActionCommand().equals("newCustom")) {
