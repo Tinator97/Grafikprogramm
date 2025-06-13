@@ -1,9 +1,12 @@
 package org.PaintProgram;
 
 //importieren der benötigten Klassen
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class PaintPanel extends JPanel {
     //Klassenvariablen
@@ -17,7 +20,7 @@ public class PaintPanel extends JPanel {
         return tool;
     }
 
-    //Getter für Werkzeug
+    //Getter für Farbe
     public Color getColor() {
         return g2Image.getColor();
     }
@@ -121,5 +124,26 @@ public class PaintPanel extends JPanel {
 
     public void erase (Point actualMousePosition) {
         brush(actualMousePosition);
+    }
+
+    public void save (File outputFile) {
+        try {
+            ImageIO.write(picture, "jpg", outputFile);
+        } catch (IOException exc){
+            JOptionPane.showMessageDialog(this, "Fehler beim Speichern");
+        }
+    }
+
+    public void load (File inputFile) {
+        try {
+            picture = ImageIO.read(inputFile);
+            g2Image = (Graphics2D) picture.createGraphics();
+            repaint();
+            g2Image.setColor(Color.BLACK);
+            tool = "brush";
+            g2Image.setStroke(new BasicStroke(5));
+        } catch (IOException exc){
+            JOptionPane.showMessageDialog(this, "Fehler beim Laden");
+        }
     }
 }

@@ -1,9 +1,14 @@
 package org.PaintProgram;
 
 //importieren der benötigten Klassen
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import static java.lang.Integer.parseInt;
 
@@ -18,13 +23,14 @@ public class Frame extends JFrame {
         private JLabel toolsLabel, colorsLabel, strokeLabel;
         private JTextField strokeField;
         private Color lastColor;
+        private JFileChooser fileChooser;
 
 
-        private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
+    private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
 
 
     //Konstruktor
-    public Frame(String frameTitel) {
+    public Frame (String frameTitel) {
         //Erstellen des Fensters
         super(frameTitel);
 
@@ -49,6 +55,10 @@ public class Frame extends JFrame {
 
         //Sichtbarkeit des Fensters
         this.setVisible(true);
+
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("JPG","jpg"));
+        fileChooser.setCurrentDirectory(new File ("EigeneBilder"));
     }
 
     // Erstellen der MenuBar mit den einzelnen Untermenüs und Items inkl. Symbolen und ShortCuts
@@ -158,18 +168,31 @@ public class Frame extends JFrame {
             if (e.getActionCommand().equals(lineString)) paintPanel.setTool(lineString);
             if (e.getActionCommand().equals(rectangleString)) paintPanel.setTool(rectangleString);
             if (e.getActionCommand().equals(ellipseString)) paintPanel.setTool(ellipseString);
-            if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
-            if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
-            if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
-
             if (e.getActionCommand().equals(eraserString) && !paintPanel.getTool().equals(eraserString)) {
                 lastColor = paintPanel.getColor();
                 paintPanel.setTool(eraserString);
                 paintPanel.setColor(Color.WHITE);
             }
+
             if (e.getActionCommand().equals("stroke")) paintPanel.setStroke(parseInt(strokeField.getText()));
+            if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
+            if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
+            if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
+
             if (e.getActionCommand().equals("new")) createPanel();
             if (e.getActionCommand().equals("close")) System.exit(0);
+            if (e.getActionCommand().equals("save")) {
+                fileChooser.showSaveDialog(null);
+                File outputFile;
+                if (String.valueOf(fileChooser.getSelectedFile()).endsWith(".jpg")) outputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
+                else outputFile = new File (fileChooser.getSelectedFile() + ".jpg");
+                paintPanel.save(outputFile);
+            }
+            if (e.getActionCommand().equals("load")) {
+                fileChooser.showOpenDialog(paintPanel);
+                File inputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
+                paintPanel.load(inputFile);
+            }
         }
     }
 
