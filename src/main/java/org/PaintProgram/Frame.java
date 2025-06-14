@@ -17,6 +17,7 @@ public class Frame extends JFrame {
     private JToolBar toolBar;
     private JPanel colorPanel;
     private JTextField strokeField;
+    private ButtonGroup colorGroup, toolGroup;
 
     //Konstanten für Werkzeuge, um Tippfehler z.B. bei den Action-commands zu vermeiden
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
@@ -144,12 +145,14 @@ public class Frame extends JFrame {
         toolBar = new JToolBar();
 
         //Erzeugen der Buttons für die Tools. Shortcuts orientieren sich an den deutschen Begriffen. Abstandhalter vor und nach den Tools
+        //ButtonGroup erstellt, um dem Anwender das ausgewählte Tool anzuzeigen
         toolBar.addSeparator(new Dimension(20,100));
-        createButton("icons/tools/brush.png", VK_P, brushString, "Pinsel", false);
-        createButton("icons/tools/linie.gif", VK_L, lineString, "Linie", false);
-        createButton("icons/tools/rechteck.gif", VK_V, rectangleString, "Viereck", false);
-        createButton("icons/tools/ellipse.gif", VK_E, ellipseString, "Ellipse", false);
-        createButton("icons/tools/eraser.png", VK_R, eraserString, "Radierer", false);
+        toolGroup = new ButtonGroup();
+        createButton("icons/tools/brush.png", VK_P, brushString, "Pinsel", false, true);
+        createButton("icons/tools/linie.gif", VK_L, lineString, "Linie", false, false);
+        createButton("icons/tools/rechteck.gif", VK_V, rectangleString, "Viereck", false, false);
+        createButton("icons/tools/ellipse.gif", VK_E, ellipseString, "Ellipse", false, false);
+        createButton("icons/tools/eraser.png", VK_R, eraserString, "Radierer", false, false);
         toolBar.addSeparator(new Dimension(20,100));
 
         //Bereich für die Strichstärke, Erzeugen eines neuen Panels mit BorderLayout
@@ -174,22 +177,24 @@ public class Frame extends JFrame {
         toolBar.addSeparator(new Dimension(20,100));
 
         //Bereich für die Farbauswahl
+        //ButtonGroup erstellt, um dem Anwender die ausgewählte Farbe anzuzeigen
+        colorGroup = new ButtonGroup();
         colorPanel = new JPanel();
         colorPanel.setLayout(new GridLayout(3,5));
         colorPanel.setMaximumSize(new Dimension(180,150));
-        createButton("icons/colors/black.jpg", 0, "black", "schwarz", true);
-        createButton("icons/colors/red.jpg", 0, "red", "rot", true);
-        createButton("icons/colors/blue.jpg", 0, "blue", "blau", true);
-        createButton("icons/colors/yellow.jpg", 0, "yellow", "gelb", true);
-        createButton("icons/colors/white.jpg", 0, "white", "weiß", true);
-        createButton("icons/colors/cyan.jpg", 0, "cyan", "cyan", true);
-        createButton("icons/colors/green.jpg", 0, "green", "grün", true);
-        createButton("icons/colors/magenta.jpg", 0, "magenta", "magenta", true);
-        createButton("icons/colors/orange.jpg", 0, "orange", "orange", true);
-        createButton("icons/colors/pink.jpg", 0, "pink", "pink", true);
-        createButton("icons/colors/lightgray.jpg", 0, "lightgray", "hellgrau", true);
-        createButton("icons/colors/gray.jpg", 0, "gray", "grau", true);
-        createButton("icons/colors/darkgray.jpg", 0, "darkgray", "dunkelgrau", true);
+        createButton("icons/colors/black.jpg", 0, "black", "schwarz", true, true);
+        createButton("icons/colors/red.jpg", 0, "red", "rot", true, false);
+        createButton("icons/colors/blue.jpg", 0, "blue", "blau", true, false);
+        createButton("icons/colors/yellow.jpg", 0, "yellow", "gelb", true, false);
+        createButton("icons/colors/white.jpg", 0, "white", "weiß", true, false);
+        createButton("icons/colors/cyan.jpg", 0, "cyan", "cyan", true, false);
+        createButton("icons/colors/green.jpg", 0, "green", "grün", true, false);
+        createButton("icons/colors/magenta.jpg", 0, "magenta", "magenta", true, false);
+        createButton("icons/colors/orange.jpg", 0, "orange", "orange", true, false);
+        createButton("icons/colors/pink.jpg", 0, "pink", "pink", true, false);
+        createButton("icons/colors/lightgray.jpg", 0, "lightgray", "hellgrau", true, false);
+        createButton("icons/colors/gray.jpg", 0, "gray", "grau", true, false);
+        createButton("icons/colors/darkgray.jpg", 0, "darkgray", "dunkelgrau", true, false);
         toolBar.add(colorPanel);
 
         this.add(toolBar, BorderLayout.NORTH);
@@ -197,14 +202,22 @@ public class Frame extends JFrame {
 
     //Eigene Methode um Buttons vollständig zu implementieren
     //jeder Button kann bekommen: Bild, Shortcut, Tooltip, ActionCommand, Action´Listener
-    private void createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip, boolean isColor) {
-        JButton button = new JButton();
+    //setSelected wird verwendet, um die Standardtools zu Beginn auszuwählen
+    private void createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip, boolean isColor, boolean select) {
+        JToggleButton button = new JToggleButton();
         button.setIcon(new ImageIcon(imageIconFilename));
         button.setMnemonic(mnemonic);
         button.setToolTipText(tooltip);
         //Wenn der Button eine Farbe ist, kommt er in das entsprechende Panel, ansonsten direkt zur Toolbar.
-        if (isColor) colorPanel.add(button);
-        else toolBar.add(button);
+        if (isColor) {
+            colorGroup.add(button);
+            colorPanel.add(button);
+        }
+        else {
+            toolGroup.add(button);
+            toolBar.add(button);
+        }
+        button.setSelected(select);
         button.setActionCommand(actionCommand);
         button.addActionListener(new ButtonTextFieldListener());
     }
