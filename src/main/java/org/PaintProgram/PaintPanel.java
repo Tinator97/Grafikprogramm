@@ -139,7 +139,7 @@ public class PaintPanel extends JPanel {
 
     public void reset () {
         g2Image.setColor(Color.WHITE);
-        g2Image.fillRect(0, 0, getWidth(), getHeight());
+        g2Image.fillRect(0, 0, picture.getWidth(), picture.getHeight());
         g2Image.setColor(Color.BLACK);
         tool = "brush";
         g2Image.setStroke(new BasicStroke(5));
