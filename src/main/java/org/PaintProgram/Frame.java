@@ -22,6 +22,7 @@ public class Frame extends JFrame {
     private JTextField strokeField;
     private Color lastColor;
     private JFileChooser fileChooser;
+    private JScrollPane scrollPane;
 
 
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
@@ -45,7 +46,9 @@ public class Frame extends JFrame {
 
         //Hinzufügen des Panels - der Zeichenfläche und erstellen der MouseListener
         paintPanel = new PaintPanel(1600, 900);
-        this.add(paintPanel, BorderLayout.CENTER);
+        paintPanel.setPreferredSize(new Dimension(1600, 900));
+        scrollPane = new JScrollPane(paintPanel);
+        this.add(scrollPane, BorderLayout.CENTER);
         paintPanel.addMouseListener(new MouseListener());
         paintPanel.addMouseMotionListener(new MouseMotionListener());
 
