@@ -15,7 +15,7 @@ public class Frame extends JFrame {
     private final PaintPanel paintPanel;
     private final JFileChooser fileChooser;
     private JToolBar toolBar;
-
+    private JPanel colorPanel;
     private JTextField strokeField;
 
     //Konstanten für Werkzeuge, um Tippfehler z.B. bei den Action-commands zu vermeiden
@@ -80,14 +80,14 @@ public class Frame extends JFrame {
         menuBar.add(toolMenu);
 
         JMenuItem newSameSizeItem = new JMenuItem("Neu");
-        newSameSizeItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
+        newSameSizeItem.setIcon(new ImageIcon("icons/menu/Add16.gif"));
         newSameSizeItem.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newSameSizeItem);
         newSameSizeItem.setActionCommand("newSameSize");
         newSameSizeItem.addActionListener(new ButtonTextFieldListener());
 
         JMenuItem newOtherSizeItem = new JMenuItem("Neu (Blattgröße anpassen)");
-        newOtherSizeItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
+        newOtherSizeItem.setIcon(new ImageIcon("icons/menu/Add16.gif"));
         newOtherSizeItem.setAccelerator(KeyStroke.getKeyStroke('M', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newOtherSizeItem);
         newOtherSizeItem.setActionCommand("newOtherSize");
@@ -100,7 +100,7 @@ public class Frame extends JFrame {
         loadItem.addActionListener(new ButtonTextFieldListener());
 
         JMenuItem saveItem = new JMenuItem("Speichern");
-        saveItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/save16.gif"));
+        saveItem.setIcon(new ImageIcon("icons/menu/save16.gif"));
         saveItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(saveItem);
         saveItem.setActionCommand("save");
@@ -143,53 +143,68 @@ public class Frame extends JFrame {
     private void createSymbolBar() {
         toolBar = new JToolBar();
 
-        //Erzeugen der Buttons für die Tools. Shortcuts orientieren sich an den deutschen Begriffen.
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", VK_P, brushString, "Pinsel");
-        createButton("icons/toolbarButtonGraphics/general/linie64.gif", VK_L, lineString, "Linie");
-        createButton("icons/toolbarButtonGraphics/general/rechteck64.gif", VK_V, rectangleString, "Viereck");
-        createButton("icons/toolbarButtonGraphics/general/ellipse64.gif", VK_E, ellipseString, "Ellipse");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", VK_R, eraserString, "Radierer");
+        //Erzeugen der Buttons für die Tools. Shortcuts orientieren sich an den deutschen Begriffen. Abstandhalter vor und nach den Tools
+        toolBar.addSeparator(new Dimension(20,100));
+        createButton("icons/tools/brush.png", VK_P, brushString, "Pinsel", false);
+        createButton("icons/tools/linie.gif", VK_L, lineString, "Linie", false);
+        createButton("icons/tools/rechteck.gif", VK_V, rectangleString, "Viereck", false);
+        createButton("icons/tools/ellipse.gif", VK_E, ellipseString, "Ellipse", false);
+        createButton("icons/tools/eraser.png", VK_R, eraserString, "Radierer", false);
+        toolBar.addSeparator(new Dimension(20,100));
 
-        //Bereich für die Strichdicke
-        JLabel strokeLabel = new JLabel("Strichdicke");
-        toolBar.add(strokeLabel);
+        //Bereich für die Strichstärke, Erzeugen eines neuen Panels mit BorderLayout
+        JPanel strokePanel = new JPanel();
+        strokePanel.setLayout(new BorderLayout());
+        //Festlegen der Größe des Panels
+        strokePanel.setMaximumSize(new Dimension(50,40));
+        //Erstellen der Überschrift
+        JLabel strokeLabel = new JLabel("Stärke");
+        strokeLabel.setHorizontalAlignment(JLabel.CENTER);
+        //Erstellen des Textfeldes zum Eingeben der Strichstärke
         strokeField = new JTextField("3");
-        strokeField.setMaximumSize(new Dimension(40,30));
         strokeField.setToolTipText("Strichdicke in Pixeln");
         strokeField.setHorizontalAlignment(JTextField.CENTER);
-        toolBar.add(strokeField);
+        //Hinzufügen des ActionCommand und des ActionListener
         strokeField.setActionCommand("stroke");
         strokeField.addActionListener(new ButtonTextFieldListener());
+        //Hinzufügen zur Toolbar und Abstandshalter
+        strokePanel.add(strokeLabel, BorderLayout.NORTH);
+        strokePanel.add(strokeField, BorderLayout.CENTER);
+        toolBar.add(strokePanel);
+        toolBar.addSeparator(new Dimension(20,100));
 
         //Bereich für die Farbauswahl
-        //Erzeugen der benötigten Buttons
-        JLabel colorsLabel = new JLabel("Farben");
-        toolBar.add(colorsLabel);
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "black", "schwarz");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "red", "rot");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "blue", "blau");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "yellow", "gelb");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "white", "weiß");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "cyan", "cyan");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "green", "grün");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "magenta", "magenta");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "orange", "orange");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "pink", "pink");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "lightgray", "hellgrau");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "gray", "grau");
-        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "darkgray", "dunkelgrau");
+        colorPanel = new JPanel();
+        colorPanel.setLayout(new GridLayout(3,5));
+        colorPanel.setMaximumSize(new Dimension(180,150));
+        createButton("icons/colors/black.jpg", 0, "black", "schwarz", true);
+        createButton("icons/colors/red.jpg", 0, "red", "rot", true);
+        createButton("icons/colors/blue.jpg", 0, "blue", "blau", true);
+        createButton("icons/colors/yellow.jpg", 0, "yellow", "gelb", true);
+        createButton("icons/colors/white.jpg", 0, "white", "weiß", true);
+        createButton("icons/colors/cyan.jpg", 0, "cyan", "cyan", true);
+        createButton("icons/colors/green.jpg", 0, "green", "grün", true);
+        createButton("icons/colors/magenta.jpg", 0, "magenta", "magenta", true);
+        createButton("icons/colors/orange.jpg", 0, "orange", "orange", true);
+        createButton("icons/colors/pink.jpg", 0, "pink", "pink", true);
+        createButton("icons/colors/lightgray.jpg", 0, "lightgray", "hellgrau", true);
+        createButton("icons/colors/gray.jpg", 0, "gray", "grau", true);
+        createButton("icons/colors/darkgray.jpg", 0, "darkgray", "dunkelgrau", true);
+        toolBar.add(colorPanel);
 
         this.add(toolBar, BorderLayout.NORTH);
     }
 
     //Eigene Methode um Buttons vollständig zu implementieren
     //jeder Button kann bekommen: Bild, Shortcut, Tooltip, ActionCommand, Action´Listener
-    private void createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip) {
+    private void createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip, boolean isColor) {
         JButton button = new JButton();
         button.setIcon(new ImageIcon(imageIconFilename));
         button.setMnemonic(mnemonic);
         button.setToolTipText(tooltip);
-        toolBar.add(button);
+        //Wenn der Button eine Farbe ist, kommt er in das entsprechende Panel, ansonsten direkt zur Toolbar.
+        if (isColor) colorPanel.add(button);
+        else toolBar.add(button);
         button.setActionCommand(actionCommand);
         button.addActionListener(new ButtonTextFieldListener());
     }
