@@ -165,7 +165,7 @@ public class Frame extends JFrame {
         JLabel strokeLabel = new JLabel("Stärke");
         strokeLabel.setHorizontalAlignment(JLabel.CENTER);
         //Erstellen des Textfeldes zum Eingeben der Strichstärke
-        strokeField = new JTextField("3");
+        strokeField = new JTextField("5");
         strokeField.setToolTipText("Strichdicke in Pixeln");
         strokeField.setHorizontalAlignment(JTextField.CENTER);
         //Hinzufügen des ActionCommand und des ActionListener
@@ -228,7 +228,8 @@ public class Frame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             //Funktion, um beim Zurückwechseln vom Radierer wieder die ursprüngliche Farbe zugeordnet zu bekommen
-            if (paintPanel.getTool().equals(eraserString) && !e.getActionCommand().equals(eraserString)) paintPanel.setColor(paintPanel.getLastColor());
+            if (paintPanel.getTool().equals(eraserString) && (e.getActionCommand().equals(brushString) || e.getActionCommand().equals(lineString) ||
+                    e.getActionCommand().equals(rectangleString) || e.getActionCommand().equals(ellipseString))) paintPanel.setColor(paintPanel.getLastColor());
 
             //Funktionen, um das Werkzeug auszuwählen
             if (e.getActionCommand().equals(brushString)) paintPanel.setTool(brushString);
@@ -248,19 +249,21 @@ public class Frame extends JFrame {
             if (e.getActionCommand().equals("stroke")) paintPanel.setStroke(parseInt(strokeField.getText()));
 
             //Funktion zum Setzen der Farbe
-            if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
-            if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
-            if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
-            if (e.getActionCommand().equals("yellow")) paintPanel.setColor(Color.YELLOW);
-            if (e.getActionCommand().equals("white")) paintPanel.setColor(Color.WHITE);
-            if (e.getActionCommand().equals("cyan")) paintPanel.setColor(Color.CYAN);
-            if (e.getActionCommand().equals("green")) paintPanel.setColor(Color.GREEN);
-            if (e.getActionCommand().equals("magenta")) paintPanel.setColor(Color.MAGENTA);
-            if (e.getActionCommand().equals("orange")) paintPanel.setColor(Color.ORANGE);
-            if (e.getActionCommand().equals("pink")) paintPanel.setColor(Color.PINK);
-            if (e.getActionCommand().equals("lightgray")) paintPanel.setColor(Color.LIGHT_GRAY);
-            if (e.getActionCommand().equals("gray")) paintPanel.setColor(Color.GRAY);
-            if (e.getActionCommand().equals("darkgray")) paintPanel.setColor(Color.DARK_GRAY);
+            if (!paintPanel.getTool().equals("eraser")){
+                if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
+                if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
+                if (e.getActionCommand().equals("blue")) paintPanel.setColor(Color.BLUE);
+                if (e.getActionCommand().equals("yellow")) paintPanel.setColor(Color.YELLOW);
+                if (e.getActionCommand().equals("white")) paintPanel.setColor(Color.WHITE);
+                if (e.getActionCommand().equals("cyan")) paintPanel.setColor(Color.CYAN);
+                if (e.getActionCommand().equals("green")) paintPanel.setColor(Color.GREEN);
+                if (e.getActionCommand().equals("magenta")) paintPanel.setColor(Color.MAGENTA);
+                if (e.getActionCommand().equals("orange")) paintPanel.setColor(Color.ORANGE);
+                if (e.getActionCommand().equals("pink")) paintPanel.setColor(Color.PINK);
+                if (e.getActionCommand().equals("lightgray")) paintPanel.setColor(Color.LIGHT_GRAY);
+                if (e.getActionCommand().equals("gray")) paintPanel.setColor(Color.GRAY);
+                if (e.getActionCommand().equals("darkgray")) paintPanel.setColor(Color.DARK_GRAY);
+            }
 
             //Funktion zum Erstellen eines neuen, weißen Zeichenblatts in der gleichen Größe des aktuellen Blatts
             if (e.getActionCommand().equals("newSameSize")) paintPanel.newPanel();
