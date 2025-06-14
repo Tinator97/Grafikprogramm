@@ -6,24 +6,20 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+
+import static java.awt.event.KeyEvent.*;
 import static java.lang.Integer.parseInt;
 
 //Klasse, die das Anwendungsfenster darstellt
 public class Frame extends JFrame {
     //Klassenvariablen
-    private PaintPanel paintPanel;
-    private JMenuBar menuBar;
-    private JMenu fileMenu, toolMenu;
-    private JMenuItem newSameSizeItem, newOtherSizeItem, loadItem, saveItem, closeItem, brushItem, lineItem, rectangleItem, ellipseItem, eraserItem;
+    private final PaintPanel paintPanel;
+    private final JFileChooser fileChooser;
     private JToolBar toolBar;
-    private JButton brushButton, lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton, whiteButton, yellowButton, cyanButton,
-            greenButton, magentaButton, orangeButton, pinkButton, lightgrayButton, grayButton, darkgrayButton;
-    private JLabel toolsLabel, colorsLabel, strokeLabel;
-    private JTextField strokeField;
-    private JFileChooser fileChooser;
-    private JScrollPane scrollPane;
 
-    //Konstanten, Tippfehler z.B. bei den Actioncommands zu vermeiden
+    private JTextField strokeField;
+
+    //Konstanten für Werkzeuge, um Tippfehler z.B. bei den Action-commands zu vermeiden
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
 
 
@@ -50,7 +46,7 @@ public class Frame extends JFrame {
         //PreferredSize muss gesetzt werden, damit das Panel auch bei kleinerem Fenster seine Größe behält
         paintPanel.setPreferredSize(new Dimension(1600, 900));
         //Hinzufügen von Scrollbars
-        scrollPane = new JScrollPane(paintPanel);
+        JScrollPane scrollPane = new JScrollPane(paintPanel);
         //Hinzufügen des Panels zum Fenster
         this.add(scrollPane, BorderLayout.CENTER);
         //erstellen der MouseListener
@@ -72,18 +68,20 @@ public class Frame extends JFrame {
         fileChooser.setCurrentDirectory(new File ("savedPictures"));
     }
 
-    //Erstellen der MenuBar mit den einzelnen Untermenüs und Items inkl. Symbolen und ShortCuts
-    //Mit F10 kann die MenuBar auch mit der Tastatur gesteuert werden
+    //Erstellen der MenuBar mit den einzelnen Untermenüs und Items inkl. Symbolen und ShortCuts mit lokalen Variablen
     //Für die Items werden gesetzt: Text, Shortcut, Bild, ActionCommand; ActionListener werden erstellt
+    //mit F10 kann die MenuBar auch mit der Tastatur gesteuert werden
     private void createMenuBar() {
+        JMenuBar menuBar;
+        JMenu fileMenu, toolMenu;
+        JMenuItem newSameSizeItem, newOtherSizeItem, loadItem, saveItem, closeItem, brushItem, lineItem, rectangleItem, ellipseItem, eraserItem;
+
         menuBar = new JMenuBar();
 
         fileMenu = new JMenu("Datei");
-        fileMenu.setMnemonic('D');
         menuBar.add(fileMenu);
 
         toolMenu = new JMenu("Werkzeuge");
-        toolMenu.setMnemonic('B');
         menuBar.add(toolMenu);
 
         newSameSizeItem = new JMenuItem("Neu");
@@ -128,7 +126,7 @@ public class Frame extends JFrame {
         lineItem.setActionCommand(lineString);
         lineItem.addActionListener(new ButtonTextFieldListener());
 
-        rectangleItem = new JMenuItem("Rechteck");
+        rectangleItem = new JMenuItem("Viereck");
         toolMenu.add(rectangleItem);
         rectangleItem.setActionCommand(rectangleString);
         rectangleItem.addActionListener(new ButtonTextFieldListener());
@@ -148,20 +146,20 @@ public class Frame extends JFrame {
 
     // Erstellen der SymbolBar mit den einzelnen Buttons für Werkzeuge inkl. Symbolen und ShortCuts
     private void createSymbolBar() {
+        JLabel colorsLabel, strokeLabel;
+
         toolBar = new JToolBar();
 
-        toolsLabel = new JLabel("Werkzeuge");
-        toolBar.add(toolsLabel);
+        //Erzeugen der Buttons für die Tools. Shortcuts orientieren sich an den deutschen Begriffen.
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", VK_P, brushString, "Pinsel");
+        createButton("icons/toolbarButtonGraphics/general/linie64.gif", VK_L, lineString, "Linie");
+        createButton("icons/toolbarButtonGraphics/general/rechteck64.gif", VK_V, rectangleString, "Viereck");
+        createButton("icons/toolbarButtonGraphics/general/ellipse64.gif", VK_E, ellipseString, "Ellipse");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", VK_R, eraserString, "Radierer");
 
-        newButtonForSymbolbar(brushButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', brushString, "Pinsel");
-        newButtonForSymbolbar(lineButton, "icons/toolbarButtonGraphics/general/linie64.gif", '0', lineString, "Linie");
-        newButtonForSymbolbar(rectangleButton, "icons/toolbarButtonGraphics/general/rechteck64.gif", '0', rectangleString, "Rechteck");
-        newButtonForSymbolbar(ellipseButton, "icons/toolbarButtonGraphics/general/ellipse64.gif", '0', ellipseString, "Ellipse");
-        newButtonForSymbolbar(eraserButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', eraserString, "Radierer");
-
+        //Bereich für die Strichdicke
         strokeLabel = new JLabel("Strichdicke");
         toolBar.add(strokeLabel);
-
         strokeField = new JTextField("3");
         strokeField.setMaximumSize(new Dimension(40,30));
         strokeField.setToolTipText("Strichdicke in Pixeln");
@@ -170,30 +168,31 @@ public class Frame extends JFrame {
         strokeField.setActionCommand("stroke");
         strokeField.addActionListener(new ButtonTextFieldListener());
 
+        //Bereich für die Farbauswahl
+        //Erzeugen der benötigten Buttons
         colorsLabel = new JLabel("Farben");
         toolBar.add(colorsLabel);
-
-        newButtonForSymbolbar(blackButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "black", "schwarz");
-        newButtonForSymbolbar(redButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "red", "rot");
-        newButtonForSymbolbar(blueButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "blue", "blau");
-        newButtonForSymbolbar(yellowButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "yellow", "gelb");
-        newButtonForSymbolbar(whiteButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "white", "weiß");
-        newButtonForSymbolbar(cyanButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "cyan", "cyan");
-        newButtonForSymbolbar(greenButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "green", "grün");
-        newButtonForSymbolbar(magentaButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "magenta", "magenta");
-        newButtonForSymbolbar(orangeButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "orange", "orange");
-        newButtonForSymbolbar(pinkButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "pink", "pink");
-        newButtonForSymbolbar(lightgrayButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "lightgray", "hellgrau");
-        newButtonForSymbolbar(grayButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "gray", "grau");
-        newButtonForSymbolbar(darkgrayButton, "icons/toolbarButtonGraphics/development/Bean24.gif", '0', "darkgray", "dunkelgrau");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "black", "schwarz");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "red", "rot");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "blue", "blau");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "yellow", "gelb");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "white", "weiß");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "cyan", "cyan");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "green", "grün");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "magenta", "magenta");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "orange", "orange");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "pink", "pink");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "lightgray", "hellgrau");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "gray", "grau");
+        createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "darkgray", "dunkelgrau");
 
         this.add(toolBar, BorderLayout.NORTH);
     }
 
     //Eigene Methode um Buttons vollständig zu implementieren
-    //Jeder Button kann bekommen: Bild, Shortcut,Tooltip, Actioncommand, Actionlistener
-    private void newButtonForSymbolbar (JButton button, String imageIconFilename, Character mnemonic, String actionCommand, String tooltip) {
-        button = new JButton();
+    //jeder Button kann bekommen: Bild, Shortcut, Tooltip, ActionCommand, Action´Listener
+    private void createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip) {
+        JButton button = new JButton();
         button.setIcon(new ImageIcon(imageIconFilename));
         button.setMnemonic(mnemonic);
         button.setToolTipText(tooltip);
@@ -202,7 +201,7 @@ public class Frame extends JFrame {
         button.addActionListener(new ButtonTextFieldListener());
     }
 
-    //Klasse zum Ausführen von Befehlen nach Knopdruck bzw. beim Bearbeiten von Textfeldern
+    //Klasse zum Ausführen von Befehlen nach Knopfdruck bzw. beim Bearbeiten von Textfeldern
     class ButtonTextFieldListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -218,7 +217,7 @@ public class Frame extends JFrame {
             if (e.getActionCommand().equals(eraserString) && !paintPanel.getTool().equals(eraserString)) {
                 //Speichern der aktuellen Farbe
                 paintPanel.setLastColor(paintPanel.getColor());
-                //Setzen der aktuellen Farbe auf weiß, da der Radierer eigentlich ein weißer Pinsel ist
+                //Setzen der aktuellen Farbe auf Weiß, da der Radierer eigentlich ein weißer Pinsel ist
                 paintPanel.setColor(Color.WHITE);
                 paintPanel.setTool(eraserString);
             }

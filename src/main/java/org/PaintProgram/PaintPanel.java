@@ -12,7 +12,7 @@ import java.io.IOException;
 public class PaintPanel extends JPanel {
     //Klassenvariablen
     private BufferedImage picture;
-    private Graphics2D g2Image, g2;
+    private Graphics2D g2Image;
     private String tool;
     private Point lastMousePosition;
     private Color lastColor;
@@ -49,7 +49,7 @@ public class PaintPanel extends JPanel {
     public PaintPanel(int width, int height) {
         //Erstellen des BufferedImage mit weißem Hintergrund
         picture = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        g2Image = (Graphics2D) picture.createGraphics();
+        g2Image = picture.createGraphics();
         g2Image.setColor(Color.WHITE);
         g2Image.fillRect(0, 0, width, height);
 
@@ -64,7 +64,7 @@ public class PaintPanel extends JPanel {
     public void paintComponent(Graphics g) {
         //Initialisieren der Zeichenfläche
         super.paintComponent(g);
-        g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
         //Zeichnen des Bildes auf die Zeichenfläche
         g2.drawImage(picture, 0, 0, null);
     }
@@ -138,7 +138,7 @@ public class PaintPanel extends JPanel {
 
     //Methode zum Radieren
     public void erase (Point actualMousePosition) {
-        //Farbe weiß wurde bereits im Frame gesetzt. Der Radierer arbeitet exakt wie der Pinsel und ruft nur diese Funktion auf.
+        //Farbe Weiß wurde bereits im Frame gesetzt. Der Radierer arbeitet exakt wie der Pinsel und ruft nur diese Funktion auf.
         brush(actualMousePosition);
     }
 
@@ -159,7 +159,7 @@ public class PaintPanel extends JPanel {
             //Laden des Bildes
             picture = ImageIO.read(inputFile);
             //Verknüpfen des Graphics2D zum Bild
-            g2Image = (Graphics2D) picture.createGraphics();
+            g2Image = picture.createGraphics();
             //Darstellen des geladenen Bildes
             repaint();
             //Auswählen der Standardtools
@@ -189,7 +189,7 @@ public class PaintPanel extends JPanel {
         setPreferredSize(new Dimension(width, height));
         //Erstellen eines neuen Bildes mit Grafik und anpassen dessen Größe
         picture = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        g2Image = (Graphics2D) picture.createGraphics();
+        g2Image = picture.createGraphics();
         setSize(new Dimension(width, height));
         //Ändern der Hintergrundfarbe zu weiß
         g2Image.setColor(Color.WHITE);

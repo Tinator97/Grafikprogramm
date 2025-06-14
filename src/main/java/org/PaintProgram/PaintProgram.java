@@ -5,7 +5,7 @@ package org.PaintProgram;
 public class PaintProgram {
     //Main-Methode
     public static void main(String[] args) {
-        //Erstellen einer Instanz "Frame" - Starten des Programms
-        Frame frame = new Frame("Name der Datei");
+        //Starten des Programms
+        new Frame("Name der Datei");
     }
 }
