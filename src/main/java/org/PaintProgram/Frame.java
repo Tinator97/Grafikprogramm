@@ -6,7 +6,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-
 import static java.awt.event.KeyEvent.*;
 import static java.lang.Integer.parseInt;
 
@@ -72,71 +71,67 @@ public class Frame extends JFrame {
     //Für die Items werden gesetzt: Text, Shortcut, Bild, ActionCommand; ActionListener werden erstellt
     //mit F10 kann die MenuBar auch mit der Tastatur gesteuert werden
     private void createMenuBar() {
-        JMenuBar menuBar;
-        JMenu fileMenu, toolMenu;
-        JMenuItem newSameSizeItem, newOtherSizeItem, loadItem, saveItem, closeItem, brushItem, lineItem, rectangleItem, ellipseItem, eraserItem;
+        JMenuBar menuBar = new JMenuBar();
 
-        menuBar = new JMenuBar();
-
-        fileMenu = new JMenu("Datei");
+        JMenu fileMenu = new JMenu("Datei");
         menuBar.add(fileMenu);
 
-        toolMenu = new JMenu("Werkzeuge");
+        JMenu toolMenu = new JMenu("Werkzeuge");
         menuBar.add(toolMenu);
 
-        newSameSizeItem = new JMenuItem("Neu");
+        JMenuItem newSameSizeItem = new JMenuItem("Neu");
         newSameSizeItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
         newSameSizeItem.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newSameSizeItem);
         newSameSizeItem.setActionCommand("newSameSize");
         newSameSizeItem.addActionListener(new ButtonTextFieldListener());
 
-        newOtherSizeItem = new JMenuItem("Neu (Blattgröße anpassen)");
+        JMenuItem newOtherSizeItem = new JMenuItem("Neu (Blattgröße anpassen)");
         newOtherSizeItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/Add16.gif"));
         newOtherSizeItem.setAccelerator(KeyStroke.getKeyStroke('M', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newOtherSizeItem);
         newOtherSizeItem.setActionCommand("newOtherSize");
         newOtherSizeItem.addActionListener(new ButtonTextFieldListener());
 
-        loadItem = new JMenuItem("Laden");
+        JMenuItem loadItem = new JMenuItem("Laden");
         loadItem.setAccelerator(KeyStroke.getKeyStroke('L', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(loadItem);
         loadItem.setActionCommand("load");
         loadItem.addActionListener(new ButtonTextFieldListener());
 
-        saveItem = new JMenuItem("Speichern");
+        JMenuItem saveItem = new JMenuItem("Speichern");
         saveItem.setIcon(new ImageIcon("icons/toolbarButtonGraphics/general/save16.gif"));
         saveItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(saveItem);
         saveItem.setActionCommand("save");
         saveItem.addActionListener(new ButtonTextFieldListener());
 
-        closeItem = new JMenuItem("Beenden");
+        JMenuItem closeItem = new JMenuItem("Beenden");
         fileMenu.add(closeItem);
         closeItem.setActionCommand("close");
         closeItem.addActionListener(new ButtonTextFieldListener());
 
-        brushItem = new JMenuItem("Pinsel");
+        JMenuItem brushItem = new JMenuItem("Pinsel");
         toolMenu.add(brushItem);
         brushItem.setActionCommand(brushString);
         brushItem.addActionListener(new ButtonTextFieldListener());
 
-        lineItem = new JMenuItem("Linie");
+        JMenuItem lineItem = new JMenuItem("Linie");
         toolMenu.add(lineItem);
         lineItem.setActionCommand(lineString);
         lineItem.addActionListener(new ButtonTextFieldListener());
 
-        rectangleItem = new JMenuItem("Viereck");
+        JMenuItem rectangleItem = new JMenuItem("Viereck");
         toolMenu.add(rectangleItem);
         rectangleItem.setActionCommand(rectangleString);
         rectangleItem.addActionListener(new ButtonTextFieldListener());
 
-        ellipseItem = new JMenuItem("Ellipse");
+        JMenuItem ellipseItem = new JMenuItem("Ellipse");
         toolMenu.add(ellipseItem);
         ellipseItem.setActionCommand(ellipseString);
         ellipseItem.addActionListener(new ButtonTextFieldListener());
 
-        eraserItem = new JMenuItem("Radierer");
+        JMenuItem eraserItem = new JMenuItem("Radierer");
         toolMenu.add(eraserItem);
         eraserItem.setActionCommand(eraserString);
         eraserItem.addActionListener(new ButtonTextFieldListener());
@@ -146,8 +141,6 @@ public class Frame extends JFrame {
 
     // Erstellen der SymbolBar mit den einzelnen Buttons für Werkzeuge inkl. Symbolen und ShortCuts
     private void createSymbolBar() {
-        JLabel colorsLabel, strokeLabel;
-
         toolBar = new JToolBar();
 
         //Erzeugen der Buttons für die Tools. Shortcuts orientieren sich an den deutschen Begriffen.
@@ -158,7 +151,7 @@ public class Frame extends JFrame {
         createButton("icons/toolbarButtonGraphics/development/Bean24.gif", VK_R, eraserString, "Radierer");
 
         //Bereich für die Strichdicke
-        strokeLabel = new JLabel("Strichdicke");
+        JLabel strokeLabel = new JLabel("Strichdicke");
         toolBar.add(strokeLabel);
         strokeField = new JTextField("3");
         strokeField.setMaximumSize(new Dimension(40,30));
@@ -170,7 +163,7 @@ public class Frame extends JFrame {
 
         //Bereich für die Farbauswahl
         //Erzeugen der benötigten Buttons
-        colorsLabel = new JLabel("Farben");
+        JLabel colorsLabel = new JLabel("Farben");
         toolBar.add(colorsLabel);
         createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "black", "schwarz");
         createButton("icons/toolbarButtonGraphics/development/Bean24.gif", 0, "red", "rot");
