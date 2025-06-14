@@ -16,6 +16,7 @@ public class PaintPanel extends JPanel {
     private String tool;
     private Point lastMousePosition;
     private Color lastColor;
+    private Point endPointOfShape;
 
     //Getter
     public String getTool() {
@@ -44,6 +45,7 @@ public class PaintPanel extends JPanel {
     public void setLastMousePosition(Point point) {
         this.lastMousePosition = point;
     }
+    public void setEndPointOfShape(Point point) {this.endPointOfShape = point;}
 
     //Konstruktor
     public PaintPanel(int width, int height) {
@@ -67,6 +69,22 @@ public class PaintPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         //Zeichnen des Bildes auf die Zeichenfläche
         g2.drawImage(picture, 0, 0, null);
+
+        //Farbe und Strichdicke der Vorschau an Auswahl anpassen
+        g2.setColor(getColor());
+        g2.setStroke(g2Image.getStroke());
+        //Zeichnen der Vorschau für Linien
+        if (tool.equals("line")) g2.drawLine(lastMousePosition.x,lastMousePosition.y, endPointOfShape.x, endPointOfShape.y);
+        //Zeichnen der Vorschau für Rechtecke
+        if (tool.equals("rectangle")) {
+            int [] rectangle = checkOrientation(lastMousePosition, endPointOfShape);
+            g2.drawRect(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
+        }
+        //Zeichnen der Vorschau für Ellipsen
+        if (tool.equals("ellipse")) {
+            int [] ellipse = checkOrientation(lastMousePosition, endPointOfShape);
+            g2.drawOval(ellipse[0], ellipse[1], ellipse[2], ellipse[3]);
+        }
     }
 
     //Methode zum Arbeiten mit dem Pinsel
@@ -89,50 +107,18 @@ public class PaintPanel extends JPanel {
     //Methode zum Zeichnen von Rechtecken
     public void rectangle (Point actualMousePosition) {
         //Berechnung der Abmaße des Rechtecks
-        int width = actualMousePosition.x - lastMousePosition.x;
-        int height = actualMousePosition.y - lastMousePosition.y;
-        //Überprüfung, in welche Richtung die Maus gezogen wird. Falls ein negativer Wert entsteht, werden Anfangs- und Endpunkt
-        //des Rechtecks entsprechend vertauscht
-        int temp;
-        if (width < 0) {
-            temp = actualMousePosition.x;
-            actualMousePosition.x = lastMousePosition.x;
-            lastMousePosition.x = temp;
-            width = -width;
-        }
-        if (height < 0) {
-            temp = actualMousePosition.y;
-            actualMousePosition.y = lastMousePosition.y;
-            lastMousePosition.y = temp;
-            height = -height;
-        }
+        int [] rectangle = checkOrientation(lastMousePosition, actualMousePosition);
         //Zeichnen des Rechtecks
-        g2Image.drawRect(lastMousePosition.x, lastMousePosition.y, width, height);
+        g2Image.drawRect(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
         repaint();
     }
 
     //Methode zum Zeichnen von Ellipsen
     public void ellipse (Point actualMousePosition) {
         //Berechnung der Abmaße der Ellipse
-        int width = actualMousePosition.x - lastMousePosition.x;
-        int height = actualMousePosition.y - lastMousePosition.y;
-        //Überprüfung, in welche Richtung die Maus gezogen wird. Falls ein negativer Wert entsteht, werden Anfangs- und Endpunkt
-        //der Ellipse entsprechend vertauscht
-        int temp;
-        if (width < 0) {
-            temp = actualMousePosition.x;
-            actualMousePosition.x = lastMousePosition.x;
-            lastMousePosition.x = temp;
-            width = -width;
-        }
-        if (height < 0) {
-            temp = actualMousePosition.y;
-            actualMousePosition.y = lastMousePosition.y;
-            lastMousePosition.y = temp;
-            height = -height;
-        }
+        int [] ellipse = checkOrientation(lastMousePosition, actualMousePosition);
         //Zeichnen der Ellipse
-        g2Image.drawOval(lastMousePosition.x, lastMousePosition.y, width, height);
+        g2Image.drawOval(ellipse[0], ellipse[1], ellipse[2], ellipse[3]);
         repaint();
     }
 
@@ -140,6 +126,26 @@ public class PaintPanel extends JPanel {
     public void erase (Point actualMousePosition) {
         //Farbe Weiß wurde bereits im Frame gesetzt. Der Radierer arbeitet exakt wie der Pinsel und ruft nur diese Funktion auf.
         brush(actualMousePosition);
+    }
+
+    //Methode zum Überprüfen, in welche Richtung Figuren gezogen werden (Behandlung von negativen Werten)
+    public int [] checkOrientation(Point startPoint, Point endPoint) {
+        //Lokale Variablen, um Sie bei Bedarf vertauschen zu können
+        int x1 = startPoint.x, y1 = startPoint.y, x2 = endPoint.x, y2 = endPoint.y;
+        //Berechnung der Abmaße der Figur
+        int width = x2 - x1;
+        int height = y2 - y1;
+        //Überprüfung, in welche Richtung die Maus gezogen wird. Falls ein negativer Wert entsteht, wird der Anfangspunkt
+        //auf den ursprünglichen Endpunkt gesetzt
+        if (width < 0) {
+            x1 = x2;
+            width = -width;
+        }
+        if (height < 0) {
+            y1 = y2;
+            height = -height;
+        }
+        return new int [] {x1, y1, width, height};
     }
 
     //Methode zum Speichern des Bildes

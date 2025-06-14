@@ -18,6 +18,7 @@ public class Frame extends JFrame {
     private JPanel colorPanel;
     private JTextField strokeField;
     private ButtonGroup colorGroup, toolGroup;
+    private boolean leftMouseButtonIsPressed;
 
     //Konstanten für Werkzeuge, um Tippfehler z.B. bei den Action-commands zu vermeiden
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
@@ -294,20 +295,28 @@ public class Frame extends JFrame {
     class MouseListener extends MouseAdapter {
         @Override
         public void mousePressed(MouseEvent e) {
-            //Setzen der aktuellen Mausposition an der Stelle, wo die Maustaste gedrückt wurde
-            paintPanel.setLastMousePosition(e.getPoint());
-            //Beim Pinsel(Radierer) kann man auch nur mit einem Mausklick zeichnen
-            if (paintPanel.getTool().equals(brushString)) paintPanel.brush(e.getPoint());
-            if (paintPanel.getTool().equals(eraserString)) paintPanel.erase(e.getPoint());
+            //Filter nach Aktionen mit der linken Maustaste
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                leftMouseButtonIsPressed = true;
+                //Speichern der Mausposition beim Mausdruck in der Variable lastMousePosition
+                paintPanel.setLastMousePosition(e.getPoint());
+                //Beim Pinsel(Radierer) kann man auch nur mit einem Mausklick zeichnen
+                if (paintPanel.getTool().equals(brushString)) paintPanel.brush(e.getPoint());
+                if (paintPanel.getTool().equals(eraserString)) paintPanel.erase(e.getPoint());
+            }
         }
 
         //Klasse zum Ausführen von Befehlen beim Loslassen der Maus
         @Override
         public void mouseReleased(MouseEvent e) {
-            //Linien, Rechtecke und Ellipsen werden beim Loslassen der Maus zusammen mit der Mausposition beim Klicken der Maus gezeichnet
-            if (paintPanel.getTool().equals(lineString)) paintPanel.line(e.getPoint());
-            if (paintPanel.getTool().equals(rectangleString)) paintPanel.rectangle(e.getPoint());
-            if (paintPanel.getTool().equals(ellipseString)) paintPanel.ellipse(e.getPoint());
+            //Filter nach Aktionen mit der linken Maustaste
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                //Linien, Rechtecke und Ellipsen werden beim Loslassen der Maus zusammen mit der Mausposition beim Klicken der Maus gezeichnet
+                if (paintPanel.getTool().equals(lineString)) paintPanel.line(e.getPoint());
+                if (paintPanel.getTool().equals(rectangleString)) paintPanel.rectangle(e.getPoint());
+                if (paintPanel.getTool().equals(ellipseString)) paintPanel.ellipse(e.getPoint());
+                leftMouseButtonIsPressed = false;
+            }
         }
     }
 
@@ -315,9 +324,17 @@ public class Frame extends JFrame {
     class MouseMotionListener extends MouseMotionAdapter {
         @Override
         public void mouseDragged(MouseEvent e) {
-            //Pinsel(Radierer) arbeiten beim Ziehen der Maus
-            if (paintPanel.getTool().equals(brushString)) paintPanel.brush(e.getPoint());
-            if (paintPanel.getTool().equals(eraserString)) paintPanel.erase(e.getPoint());
+            //Filter nach Aktionen mit der linken Maustaste
+            if (leftMouseButtonIsPressed) {
+                //Pinsel(Radierer) arbeiten beim Ziehen der Maus
+                if (paintPanel.getTool().equals(brushString)) paintPanel.brush(e.getPoint());
+                if (paintPanel.getTool().equals(eraserString)) paintPanel.erase(e.getPoint());
+                //Positionsübergabe der Endposition von Linie, Rechteck und Ellipse für die Vorschau und Aktualisierung der Vorschau beim Ziehen
+                if (paintPanel.getTool().equals(lineString) || paintPanel.getTool().equals(rectangleString) || paintPanel.getTool().equals(ellipseString) ) {
+                    paintPanel.setEndPointOfShape(e.getPoint());
+                    paintPanel.repaint();
+                }
+            }
         }
     }
 }
