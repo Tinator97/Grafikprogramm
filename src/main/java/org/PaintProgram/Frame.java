@@ -19,6 +19,7 @@ public class Frame extends JFrame {
     private JTextField strokeField;
     private ButtonGroup colorGroup, toolGroup;
     private boolean leftMouseButtonIsPressed;
+    private File outputFile;
 
     //Konstanten für Werkzeuge, um Tippfehler z.B. bei den Action-commands zu vermeiden
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
@@ -107,6 +108,12 @@ public class Frame extends JFrame {
         fileMenu.add(saveItem);
         saveItem.setActionCommand("save");
         saveItem.addActionListener(new ButtonTextFieldListener());
+
+        JMenuItem saveAsItem = new JMenuItem("Speichern unter");
+        saveAsItem.setIcon(new ImageIcon("icons/menu/save16.gif"));
+        fileMenu.add(saveAsItem);
+        saveAsItem.setActionCommand("saveAs");
+        saveAsItem.addActionListener(new ButtonTextFieldListener());
 
         JMenuItem closeItem = new JMenuItem("Beenden");
         fileMenu.add(closeItem);
@@ -248,7 +255,7 @@ public class Frame extends JFrame {
             //Funktion zum Setzen der Strichdicke
             if (e.getActionCommand().equals("stroke")) paintPanel.setStroke(parseInt(strokeField.getText()));
 
-            //Funktion zum Setzen der Farbe
+            //Funktion zum Setzen der Farbe, nur wenn ein anderes Tool als der Radierer ausgewählt ist
             if (!paintPanel.getTool().equals("eraser")){
                 if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
                 if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
@@ -265,31 +272,61 @@ public class Frame extends JFrame {
                 if (e.getActionCommand().equals("darkgray")) paintPanel.setColor(Color.DARK_GRAY);
             }
 
-            //Funktion zum Erstellen eines neuen, weißen Zeichenblatts in der gleichen Größe des aktuellen Blatts
-            if (e.getActionCommand().equals("newSameSize")) paintPanel.newPanel();
-            //Funktion zum Erstellen eines neuen, weißen Zeichenblatts in neu zu bestimmender Größe
+            //Funktion zum Erstellen eines neuen, weißen Zeichenblatts in der gleichen Größe des aktuellen Blatts mit Bestätigungsdialog
+            if (e.getActionCommand().equals("newSameSize")) {
+                int confirmation = JOptionPane.showConfirmDialog(paintPanel, "Wollen Sie wirklich ein neues Blatt erstellen? Ungespeicherter Fortschritt geht verloren.", "new file", JOptionPane.YES_NO_OPTION);
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    paintPanel.newPanel();
+                    //zurücksetzen des Speicherpfades
+                    outputFile = null;
+                }
+            }
+            //Funktion zum Erstellen eines neuen, weißen Zeichenblatts in neu zu bestimmender Größe mit Bestätigungsdialog
             if (e.getActionCommand().equals("newOtherSize")) {
-                //Abfrage der gewünschten Größe der Zeichenfläche
-                int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
-                int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
-                paintPanel.newPanel(width, height);
+                int confirmation = JOptionPane.showConfirmDialog(paintPanel, "Wollen Sie wirklich ein neues Blatt erstellen? Ungespeicherter Fortschritt geht verloren.", "new file", JOptionPane.YES_NO_OPTION);
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    //Abfrage der gewünschten Größe der Zeichenfläche
+                    int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
+                    int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
+                    paintPanel.newPanel(width, height);
+                    //zurücksetzen des Speicherpfades
+                    outputFile = null;
+                }
             }
             //Funktion zum Beenden des Programms
             if (e.getActionCommand().equals("close")) System.exit(0);
-            //Funktion zum Speichern des Bildes
+            //Funktion zum Speichern des Bildes. Nur wenn noch keine Datei vorhanden ist, wird der Speichern-Dialog aufgerufen
             if (e.getActionCommand().equals("save")) {
-                fileChooser.showSaveDialog(null);
-                File outputFile;
-                //es wird an einen Dateinamen nur die Endung .jpg angehängt, wenn diese noch nicht vorhanden ist
-                if (String.valueOf(fileChooser.getSelectedFile()).endsWith(".jpg")) outputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
-                else outputFile = new File (fileChooser.getSelectedFile() + ".jpg");
-                paintPanel.save(outputFile);
+                //Dialog wird nur angezeigt, wenn noch keine Datei vorhanden ist
+                if (outputFile == null) {
+                    //Abfrage, ob wirklich gespeichert werden soll
+                    if (fileChooser.showSaveDialog(paintPanel) == JFileChooser.APPROVE_OPTION) {
+                        //es wird an einen Dateinamen nur die Endung .jpg angehängt, wenn diese noch nicht vorhanden ist
+                        if (String.valueOf(fileChooser.getSelectedFile()).endsWith(".jpg")) outputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
+                        else outputFile = new File (fileChooser.getSelectedFile() + ".jpg");
+                    }
+                }
+                if (outputFile != null) paintPanel.save(outputFile);
             }
-            //Funktion zum Laden eines Bildes
+            //Funktion zum Speichern des Bildes. Immer mit Speichern-Dialog
+            if (e.getActionCommand().equals("saveAs")) {
+                if (fileChooser.showSaveDialog(paintPanel) == JFileChooser.APPROVE_OPTION) {
+                    //es wird an einen Dateinamen nur die Endung .jpg angehängt, wenn diese noch nicht vorhanden ist
+                    if (String.valueOf(fileChooser.getSelectedFile()).endsWith(".jpg")) outputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
+                    else outputFile = new File (fileChooser.getSelectedFile() + ".jpg");
+                    paintPanel.save(outputFile);
+                }
+            }
+            //Funktion zum Laden eines Bildes mit Bestätigungsdialog
             if (e.getActionCommand().equals("load")) {
-                fileChooser.showOpenDialog(paintPanel);
-                File inputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
-                paintPanel.load(inputFile);
+                int confirmation = JOptionPane.showConfirmDialog(paintPanel, "Wollen Sie wirklich ein neues Bild laden? Ungespeicherter Fortschritt geht verloren.", "load file", JOptionPane.YES_NO_OPTION);
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    fileChooser.showOpenDialog(paintPanel);
+                    File inputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
+                    paintPanel.load(inputFile);
+                    //anpassen des Speicherpfades
+                    outputFile = inputFile;
+                }
             }
         }
     }

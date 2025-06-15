@@ -70,17 +70,17 @@ public class PaintPanel extends JPanel {
         //Zeichnen des Bildes auf die Zeichenfläche
         g2.drawImage(picture, 0, 0, null);
 
-        //Farbe und Strichdicke der Vorschau an Auswahl anpassen
+        //Farbe und Strichdicke der Vorschau beim Ziehen an Auswahl anpassen
         g2.setColor(getColor());
         g2.setStroke(g2Image.getStroke());
-        //Zeichnen der Vorschau für Linien
+        //Zeichnen der Vorschau beim Ziehen für Linien
         if (tool.equals("line")) g2.drawLine(lastMousePosition.x,lastMousePosition.y, endPointOfShape.x, endPointOfShape.y);
-        //Zeichnen der Vorschau für Rechtecke
+        //Zeichnen der Vorschau beim Ziehen für Rechtecke
         if (tool.equals("rectangle")) {
             int [] rectangle = checkOrientation(lastMousePosition, endPointOfShape);
             g2.drawRect(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
         }
-        //Zeichnen der Vorschau für Ellipsen
+        //Zeichnen der Vorschau beim Ziehen für Ellipsen
         if (tool.equals("ellipse")) {
             int [] ellipse = checkOrientation(lastMousePosition, endPointOfShape);
             g2.drawOval(ellipse[0], ellipse[1], ellipse[2], ellipse[3]);
@@ -197,13 +197,7 @@ public class PaintPanel extends JPanel {
         picture = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2Image = picture.createGraphics();
         setSize(new Dimension(width, height));
-        //Ändern der Hintergrundfarbe zu weiß
-        g2Image.setColor(Color.WHITE);
-        g2Image.fillRect(0, 0, width, height);
-        repaint();
-        //Auswählen der Standardtools
-        g2Image.setColor(Color.BLACK);
-        tool = "brush";
-        g2Image.setStroke(new BasicStroke(5));
+        //Aufruf der überlagerten Funktion
+        newPanel();
     }
 }
