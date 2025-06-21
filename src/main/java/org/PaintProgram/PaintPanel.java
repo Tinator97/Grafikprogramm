@@ -59,6 +59,10 @@ public class PaintPanel extends JPanel {
         tool = "brush";
         g2Image.setColor(Color.BLACK);
         g2Image.setStroke(new BasicStroke(5));
+
+        //Initialisierung weiterer Variablen
+        lastMousePosition = new Point(0,0);
+        endPointOfShape = new Point(0,0);
     }
 
     //Methode paintComponent muss zum Zeichnen auf der Zeichenoberfläche überschrieben werden

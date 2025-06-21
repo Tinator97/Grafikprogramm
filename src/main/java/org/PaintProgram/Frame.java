@@ -362,6 +362,8 @@ public class Frame extends JFrame {
                 leftMouseButtonIsPressed = true;
                 //Speichern der Mausposition beim Mausdruck in der Variable lastMousePosition
                 paintPanel.setLastMousePosition(e.getPoint());
+                //Zurücksetzen der Endposition der Figur vor dem Ziehen, um ungewolltes Verhalten der Vorschau zu vermeiden
+                paintPanel.setEndPointOfShape(e.getPoint());
                 //Beim Pinsel(Radierer) kann man auch nur mit einem Mausklick zeichnen
                 if (paintPanel.getTool().equals(brushString)) paintPanel.brush(e.getPoint());
                 if (paintPanel.getTool().equals(eraserString)) paintPanel.erase(e.getPoint());
