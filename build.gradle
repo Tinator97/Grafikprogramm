@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'info.solidsoft.pitest' version '1.7.0'
 }
 
 group = 'org.example'
@@ -10,10 +11,21 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+    testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
 }
 
 test {
-    useJUnitPlatform()
+    useJUnit()
+}
+
+pitest {
+    targetClasses = ['org.example.*']
+    pitestVersion = '1.7.0'
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
 }
