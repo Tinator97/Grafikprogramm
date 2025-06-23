@@ -3,7 +3,7 @@ plugins {
     id 'info.solidsoft.pitest' version '1.7.0'
 }
 
-group = 'org.example'
+group = 'org.PaintProgram'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -28,4 +28,10 @@ pitest {
     threads = 4
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
