@@ -6,6 +6,6 @@ public class PaintProgram {
     //Main-Methode
     public static void main(String[] args) {
         //Starten des Programms
-        new Frame("Name der Datei");
+        new Frame("Zeichenprogramm");
     }
 }

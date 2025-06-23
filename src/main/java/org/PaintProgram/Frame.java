@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.awt.event.KeyEvent.*;
+import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
 //Klasse, die das Anwendungsfenster darstellt
@@ -22,6 +23,7 @@ public class Frame extends JFrame {
     private JPanel colorPanel;
     private JTextField strokeField;
     private ButtonGroup colorGroup, toolGroup;
+    private JToggleButton blackButton, redButton, blueButton, yellowButton, whiteButton, cyanButton, greenButton, magentaButton, orangeButton, pinkButton, lightgrayButton, grayButton, darkgrayButton;
     private boolean leftMouseButtonIsPressed;
     private File outputFile;
 
@@ -91,63 +93,63 @@ public class Frame extends JFrame {
         newSameSizeItem.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newSameSizeItem);
         newSameSizeItem.setActionCommand("newSameSize");
-        newSameSizeItem.addActionListener(new ButtonTextFieldListener());
+        newSameSizeItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem newOtherSizeItem = new JMenuItem("Neu (Blattgröße anpassen)");
         newOtherSizeItem.setIcon(new ImageIcon("icons/menu/Add16.gif"));
         newOtherSizeItem.setAccelerator(KeyStroke.getKeyStroke('M', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newOtherSizeItem);
         newOtherSizeItem.setActionCommand("newOtherSize");
-        newOtherSizeItem.addActionListener(new ButtonTextFieldListener());
+        newOtherSizeItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem loadItem = new JMenuItem("Laden");
         loadItem.setAccelerator(KeyStroke.getKeyStroke('L', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(loadItem);
         loadItem.setActionCommand("load");
-        loadItem.addActionListener(new ButtonTextFieldListener());
+        loadItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem saveItem = new JMenuItem("Speichern");
         saveItem.setIcon(new ImageIcon("icons/menu/save16.gif"));
         saveItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(saveItem);
         saveItem.setActionCommand("save");
-        saveItem.addActionListener(new ButtonTextFieldListener());
+        saveItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem saveAsItem = new JMenuItem("Speichern unter");
         saveAsItem.setIcon(new ImageIcon("icons/menu/save16.gif"));
         fileMenu.add(saveAsItem);
         saveAsItem.setActionCommand("saveAs");
-        saveAsItem.addActionListener(new ButtonTextFieldListener());
+        saveAsItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem closeItem = new JMenuItem("Beenden");
         fileMenu.add(closeItem);
         closeItem.setActionCommand("close");
-        closeItem.addActionListener(new ButtonTextFieldListener());
+        closeItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem brushItem = new JMenuItem("Pinsel");
         toolMenu.add(brushItem);
         brushItem.setActionCommand(brushString);
-        brushItem.addActionListener(new ButtonTextFieldListener());
+        brushItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem lineItem = new JMenuItem("Linie");
         toolMenu.add(lineItem);
         lineItem.setActionCommand(lineString);
-        lineItem.addActionListener(new ButtonTextFieldListener());
+        lineItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem rectangleItem = new JMenuItem("Viereck");
         toolMenu.add(rectangleItem);
         rectangleItem.setActionCommand(rectangleString);
-        rectangleItem.addActionListener(new ButtonTextFieldListener());
+        rectangleItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem ellipseItem = new JMenuItem("Ellipse");
         toolMenu.add(ellipseItem);
         ellipseItem.setActionCommand(ellipseString);
-        ellipseItem.addActionListener(new ButtonTextFieldListener());
+        ellipseItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem eraserItem = new JMenuItem("Radierer");
         toolMenu.add(eraserItem);
         eraserItem.setActionCommand(eraserString);
-        eraserItem.addActionListener(new ButtonTextFieldListener());
+        eraserItem.addActionListener(new ButtonAndTextFieldListener());
 
         setJMenuBar(menuBar);
     }
@@ -176,12 +178,12 @@ public class Frame extends JFrame {
         JLabel strokeLabel = new JLabel("Stärke");
         strokeLabel.setHorizontalAlignment(JLabel.CENTER);
         //Erstellen des Textfeldes zum Eingeben der Strichstärke
-        strokeField = new JTextField("5");
+        strokeField = new JTextField("5.0");
         strokeField.setToolTipText("Strichdicke in Pixeln");
         strokeField.setHorizontalAlignment(JTextField.CENTER);
         //Hinzufügen des ActionCommand und des ActionListener
         strokeField.setActionCommand("stroke");
-        strokeField.addActionListener(new ButtonTextFieldListener());
+        strokeField.addActionListener(new ButtonAndTextFieldListener());
         //Hinzufügen zur Toolbar und Abstandshalter
         strokePanel.add(strokeLabel, BorderLayout.NORTH);
         strokePanel.add(strokeField, BorderLayout.CENTER);
@@ -189,24 +191,24 @@ public class Frame extends JFrame {
         toolBar.addSeparator(new Dimension(20,100));
 
         //Bereich für die Farbauswahl
-        //ButtonGroup erstellt, um dem Anwender die ausgewählte Farbe anzuzeigen
+        //ButtonGroup erstellt, um dem Anwender die ausgewählte Farbe anzuzeigen, Erstellen der Buttons
         colorGroup = new ButtonGroup();
         colorPanel = new JPanel();
         colorPanel.setLayout(new GridLayout(3,5));
         colorPanel.setMaximumSize(new Dimension(180,150));
-        createButton("icons/colors/black.jpg", 0, "black", "schwarz", true, true);
-        createButton("icons/colors/red.jpg", 0, "red", "rot", true, false);
-        createButton("icons/colors/blue.jpg", 0, "blue", "blau", true, false);
-        createButton("icons/colors/yellow.jpg", 0, "yellow", "gelb", true, false);
-        createButton("icons/colors/white.jpg", 0, "white", "weiß", true, false);
-        createButton("icons/colors/cyan.jpg", 0, "cyan", "cyan", true, false);
-        createButton("icons/colors/green.jpg", 0, "green", "grün", true, false);
-        createButton("icons/colors/magenta.jpg", 0, "magenta", "magenta", true, false);
-        createButton("icons/colors/orange.jpg", 0, "orange", "orange", true, false);
-        createButton("icons/colors/pink.jpg", 0, "pink", "pink", true, false);
-        createButton("icons/colors/lightgray.jpg", 0, "lightgray", "hellgrau", true, false);
-        createButton("icons/colors/gray.jpg", 0, "gray", "grau", true, false);
-        createButton("icons/colors/darkgray.jpg", 0, "darkgray", "dunkelgrau", true, false);
+        blackButton = createButton("icons/colors/black.jpg", 0, "black", "schwarz", true, true);
+        redButton = createButton("icons/colors/red.jpg", 0, "red", "rot", true, false);
+        blueButton = createButton("icons/colors/blue.jpg", 0, "blue", "blau", true, false);
+        yellowButton = createButton("icons/colors/yellow.jpg", 0, "yellow", "gelb", true, false);
+        whiteButton = createButton("icons/colors/white.jpg", 0, "white", "weiß", true, false);
+        cyanButton = createButton("icons/colors/cyan.jpg", 0, "cyan", "cyan", true, false);
+        greenButton = createButton("icons/colors/green.jpg", 0, "green", "grün", true, false);
+        magentaButton= createButton("icons/colors/magenta.jpg", 0, "magenta", "magenta", true, false);
+        orangeButton= createButton("icons/colors/orange.jpg", 0, "orange", "orange", true, false);
+        pinkButton = createButton("icons/colors/pink.jpg", 0, "pink", "pink", true, false);
+        lightgrayButton = createButton("icons/colors/lightgray.jpg", 0, "lightgray", "hellgrau", true, false);
+        grayButton = createButton("icons/colors/gray.jpg", 0, "gray", "grau", true, false);
+        darkgrayButton = createButton("icons/colors/darkgray.jpg", 0, "darkgray", "dunkelgrau", true, false);
         toolBar.add(colorPanel);
 
         this.add(toolBar, BorderLayout.NORTH);
@@ -215,7 +217,7 @@ public class Frame extends JFrame {
     //Eigene Methode um Buttons vollständig zu implementieren
     //jeder Button kann bekommen: Bild, Shortcut, Tooltip, ActionCommand, Action´Listener
     //setSelected wird verwendet, um die Standardtools zu Beginn auszuwählen
-    private void createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip, boolean isColor, boolean select) {
+    private JToggleButton createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip, boolean isColor, boolean select) {
         JToggleButton button = new JToggleButton();
         button.setIcon(new ImageIcon(imageIconFilename));
         button.setMnemonic(mnemonic);
@@ -231,19 +233,37 @@ public class Frame extends JFrame {
         }
         button.setSelected(select);
         button.setActionCommand(actionCommand);
-        button.addActionListener(new ButtonTextFieldListener());
+        button.addActionListener(new ButtonAndTextFieldListener());
+        return button;
     }
 
     //Klasse zum Ausführen von Befehlen nach Knopfdruck bzw. beim Bearbeiten von Textfeldern
-    class ButtonTextFieldListener implements ActionListener {
-        //Klassenvariable für das Standardverzeichnis für gespeicherte Bidler
+    class ButtonAndTextFieldListener implements ActionListener {
+        //Klassenvariable für das Standardverzeichnis für gespeicherte Bilder
         Path savedPictures = Path.of("saved Pictures");
 
         @Override
         public void actionPerformed(ActionEvent e) {
             //Funktion, um beim Zurückwechseln vom Radierer wieder die ursprüngliche Farbe zugeordnet zu bekommen
             if (paintPanel.getTool().equals(eraserString) && (e.getActionCommand().equals(brushString) || e.getActionCommand().equals(lineString) ||
-                    e.getActionCommand().equals(rectangleString) || e.getActionCommand().equals(ellipseString))) paintPanel.setColor(paintPanel.getLastColor());
+                    e.getActionCommand().equals(rectangleString) || e.getActionCommand().equals(ellipseString))) {
+                Color lastColor = paintPanel.getLastColor();
+                paintPanel.setColor(lastColor);
+                //Anzeige der Farbauswahl nach dem Radieren
+                if (lastColor == Color.BLACK) blackButton.setSelected(true);
+                if (lastColor == Color.RED) redButton.setSelected(true);
+                if (lastColor == Color.BLUE) blueButton.setSelected(true);
+                if (lastColor == Color.YELLOW) yellowButton.setSelected(true);
+                if (lastColor == Color.WHITE) whiteButton.setSelected(true);
+                if (lastColor == Color.CYAN) cyanButton.setSelected(true);
+                if (lastColor == Color.GREEN) greenButton.setSelected(true);
+                if (lastColor == Color.MAGENTA) magentaButton.setSelected(true);
+                if (lastColor == Color.ORANGE) orangeButton.setSelected(true);
+                if (lastColor == Color.PINK) pinkButton.setSelected(true);
+                if (lastColor == Color.LIGHT_GRAY) lightgrayButton.setSelected(true);
+                if (lastColor == Color.GRAY) grayButton.setSelected(true);
+                if (lastColor == Color.DARK_GRAY) darkgrayButton.setSelected(true);
+            }
 
             //Funktionen, um das Werkzeug auszuwählen
             if (e.getActionCommand().equals(brushString)) paintPanel.setTool(brushString);
@@ -257,12 +277,33 @@ public class Frame extends JFrame {
                 //Setzen der aktuellen Farbe auf Weiß, da der Radierer eigentlich ein weißer Pinsel ist
                 paintPanel.setColor(Color.WHITE);
                 paintPanel.setTool(eraserString);
+                //Aufheben der Farbauswahl beim Radieren
+                colorGroup.clearSelection();
             }
 
-            //Funktion zum Setzen der Strichdicke
-            if (e.getActionCommand().equals("stroke")) paintPanel.setStroke(parseInt(strokeField.getText()));
+            //Funktion zum Setzen der Strichstärke
+             if (e.getActionCommand().equals("stroke")) {
+                try {
+                    //Einlesen der Strichstärke
+                    String strokeString = strokeField.getText();
+                    //Überprüfung, ob Strichstärke eine Zahl ist
+                    if (!strokeString.matches("^-?(?:\\d+\\.?\\d*|\\.\\d+)$")) throw new IOException("Ungültige Eingabe: Es muss eine Zahl eingegeben werden!");
+                    float stroke = parseFloat(strokeString);
+                    //Überprüfung, ob Strichstärke größer als null ist
+                    if (stroke <= 0) throw new IOException("Ungültige Eingabe: Der Wert muss größer als Null sein!");
+                    //Ändern der Strichstärke
+                    paintPanel.setStroke(stroke);
+                    //Neuerzeugen des Textes, damit konstant wenigstens eine Nachkommastelle angezeigt wird z. B. Eingabe 8 und Anzeige 8.0
+                    strokeField.setText("" + paintPanel.getStroke());
+                } catch (IOException ex) {
+                    //zurücksetzen des Textfeldes auf ursprüngliche Strichdicke
+                    strokeField.setText("" + paintPanel.getStroke());
+                }
+                 //Fokus aus dem Textfeld entfernen, damit nicht aus Versehen weitergeschrieben wird
+                 strokeField.transferFocus();
+            }
 
-            //Funktion zum Setzen der Farbe, nur wenn ein anderes Tool als der Radierer ausgewählt ist
+            //Funktion zum Setzen der Farbe, nur wenn ein anderes Tool als der Radierer ausgewählt ist, ansonsten Aufheben der Auswahl
             if (!paintPanel.getTool().equals("eraser")){
                 if (e.getActionCommand().equals("black")) paintPanel.setColor(Color.BLACK);
                 if (e.getActionCommand().equals("red")) paintPanel.setColor(Color.RED);
@@ -277,7 +318,7 @@ public class Frame extends JFrame {
                 if (e.getActionCommand().equals("lightgray")) paintPanel.setColor(Color.LIGHT_GRAY);
                 if (e.getActionCommand().equals("gray")) paintPanel.setColor(Color.GRAY);
                 if (e.getActionCommand().equals("darkgray")) paintPanel.setColor(Color.DARK_GRAY);
-            }
+            } else colorGroup.clearSelection();
 
             //Funktion zum Erstellen eines neuen, weißen Zeichenblatts in der gleichen Größe des aktuellen Blatts mit Bestätigungsdialog
             if (e.getActionCommand().equals("newSameSize")) {
@@ -292,12 +333,24 @@ public class Frame extends JFrame {
             if (e.getActionCommand().equals("newOtherSize")) {
                 int confirmation = JOptionPane.showConfirmDialog(paintPanel, "Wollen Sie wirklich ein neues Blatt erstellen? Ungespeicherter Fortschritt geht verloren.", "Neues Blatt", JOptionPane.YES_NO_OPTION);
                 if (confirmation == JOptionPane.YES_OPTION) {
-                    //Abfrage der gewünschten Größe der Zeichenfläche
-                    int width = parseInt(JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln"));
-                    int height = parseInt(JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln"));
-                    paintPanel.newPanel(width, height);
-                    //zurücksetzen des Speicherpfades
-                    outputFile = null;
+                    try {
+                        //Abfrage der gewünschten Größe der Zeichenfläche
+                        String widthString = JOptionPane.showInputDialog("Breite der Zeichenfläche in Pixeln");
+                        String heightString = JOptionPane.showInputDialog("Höhe der Zeichenfläche in Pixeln");
+                        //Überprüfung, ob Eingabe eine Ganzzahl ist
+                        if (!widthString.matches("^-?\\d+$") || !heightString.matches("^-?\\d+$")) throw new IOException("Ungültige Eingabe: Es müssen ganze Zahlen eingegeben werden!");
+                        int width = parseInt(widthString);
+                        int height = parseInt(heightString);
+                        //Überprüfung, ob Eingaben positiv sind
+                        if (width <= 0 || height <= 0) throw new IOException("Ungültige Eingabe: Die Werte müssen größer als Null sein!");
+                        //Erstellen der neuen Zeichenfläche
+                        paintPanel.newPanel(width, height);
+                        //zurücksetzen des Speicherpfades
+                        outputFile = null;
+                    } catch (IOException ex) {
+                        //Fehlermeldung, bei falscher Eingabe
+                        JOptionPane.showMessageDialog(paintPanel, ex.getMessage());
+                    }
                 }
             }
             //Funktion zum Beenden des Programms mit Bestätigungsdialog
@@ -315,7 +368,7 @@ public class Frame extends JFrame {
                         try {
                             if (!Files.exists(savedPictures)) Files.createDirectory(savedPictures);
                         } catch (IOException ex) {
-                            JOptionPane.showMessageDialog(paintPanel, "Standarverzeichnis für gespeicherte Bilder konnte nicht erstellt werden!");
+                            JOptionPane.showMessageDialog(paintPanel, "Standardverzeichnis für gespeicherte Bilder konnte nicht erstellt werden!");
                         }
                         //es wird an einen Dateinamen nur die Endung .jpg angehängt, wenn diese noch nicht vorhanden ist
                         if (String.valueOf(fileChooser.getSelectedFile()).endsWith(".jpg")) outputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
@@ -331,7 +384,7 @@ public class Frame extends JFrame {
                     try {
                         if (!Files.exists(savedPictures)) Files.createDirectory(savedPictures);
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(paintPanel, "Standarverzeichnis für gespeicherte Bilder konnte nicht erstellt werden!");
+                        JOptionPane.showMessageDialog(paintPanel, "Standardverzeichnis für gespeicherte Bilder konnte nicht erstellt werden!");
                     }
                     //es wird an einen Dateinamen nur die Endung .jpg angehängt, wenn diese noch nicht vorhanden ist
                     if (String.valueOf(fileChooser.getSelectedFile()).endsWith(".jpg")) outputFile = new File (String.valueOf(fileChooser.getSelectedFile()));
@@ -341,7 +394,7 @@ public class Frame extends JFrame {
             }
             //Funktion zum Laden eines Bildes mit Bestätigungsdialog
             if (e.getActionCommand().equals("load")) {
-                int confirmation = JOptionPane.showConfirmDialog(paintPanel, "Wollen Sie wirklich ein neues Bild laden? Ungespeicherter Fortschritt geht verloren.", "load file", JOptionPane.YES_NO_OPTION);
+                int confirmation = JOptionPane.showConfirmDialog(paintPanel, "Wollen Sie wirklich ein neues Bild laden? Ungespeicherter Fortschritt geht verloren.", "Laden", JOptionPane.YES_NO_OPTION);
                 if (confirmation == JOptionPane.YES_OPTION) {
                     fileChooser.showOpenDialog(paintPanel);
                     File inputFile = new File (String.valueOf(fileChooser.getSelectedFile()));

@@ -23,7 +23,7 @@ test {
 }
 
 pitest {
-    targetClasses = ['org.example.*']
+    targetClasses = ['org.PaintProgram.*']
     pitestVersion = '1.7.0'
     threads = 4
     outputFormats = ['XML', 'HTML']

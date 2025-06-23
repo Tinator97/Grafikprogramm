@@ -28,6 +28,10 @@ public class PaintPanel extends JPanel {
     public Color getLastColor() {
         return lastColor;
     }
+    public float getStroke() {
+        BasicStroke stroke = (BasicStroke) g2Image.getStroke();
+        return stroke.getLineWidth();
+    }
 
     //Setter
     public void setTool(String tool) {
@@ -39,7 +43,7 @@ public class PaintPanel extends JPanel {
     public void setLastColor(Color color) {
         this.lastColor = color;
     }
-    public void setStroke(int stroke) {
+    public void setStroke(float stroke) {
         g2Image.setStroke(new BasicStroke(stroke));
     }
     public void setLastMousePosition(Point point) {
@@ -58,7 +62,7 @@ public class PaintPanel extends JPanel {
         //Initialisierung vom ausgewählten Werkzeug, der Farbe und der Strichdicke
         tool = "brush";
         g2Image.setColor(Color.BLACK);
-        g2Image.setStroke(new BasicStroke(5));
+        g2Image.setStroke(new BasicStroke(5.0F));
 
         //Initialisierung weiterer Variablen
         lastMousePosition = new Point(0,0);
@@ -158,7 +162,7 @@ public class PaintPanel extends JPanel {
         try {
             ImageIO.write(picture, "jpg", outputFile);
         } catch (IOException exc){
-            JOptionPane.showMessageDialog(this, "Fehler beim Speichern");
+            JOptionPane.showMessageDialog(this, "Fehler beim Speichern des Bildes!");
         }
     }
 
@@ -175,9 +179,9 @@ public class PaintPanel extends JPanel {
             //Auswählen der Standardtools
             g2Image.setColor(Color.BLACK);
             tool = "brush";
-            g2Image.setStroke(new BasicStroke(5));
+            g2Image.setStroke(new BasicStroke(5.0F));
         } catch (IOException exc){
-            JOptionPane.showMessageDialog(this, "Fehler beim Laden");
+            JOptionPane.showMessageDialog(this, "Fehler beim Laden des Bildes!");
         }
     }
 
@@ -190,7 +194,7 @@ public class PaintPanel extends JPanel {
         //Auswählen der Standardtools
         g2Image.setColor(Color.BLACK);
         tool = "brush";
-        g2Image.setStroke(new BasicStroke(5));
+        g2Image.setStroke(new BasicStroke(5.0F));
     }
 
     //Überladene Funktion zum Erzeugen einer neuen Zeichenoberfläche mit anderer Größe

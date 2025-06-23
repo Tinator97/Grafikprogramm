@@ -78,6 +78,24 @@ public class TestPaintPanel {
         assertEquals(expectedColor, actualColor);
     }
 
+    //Testen der Getter- und Setter-Methode für die Strichdicke in einem Test
+    @Test
+    @Parameters({
+            //"",
+            //"-5",
+            //"0",
+            "0.1",
+            "1",
+            "2",
+            "1000",
+            "5.5"
+    })
+    public void testSetAndGetStroke (float expectedStroke) {
+        paintPanel.setStroke(expectedStroke);
+        float actualStroke = paintPanel.getStroke();
+        assertEquals(expectedStroke, actualStroke, 0.0);
+    }
+
     //Testen der Methode checkOrientation, Kommentare zu den einzelnen Tests sind in der Dokumentation
     @Test
     @Parameters({
