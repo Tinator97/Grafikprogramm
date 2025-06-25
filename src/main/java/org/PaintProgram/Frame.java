@@ -23,13 +23,12 @@ public class Frame extends JFrame {
     private JPanel colorPanel;
     private JTextField strokeField;
     private ButtonGroup colorGroup, toolGroup;
-    private JToggleButton blackButton, redButton, blueButton, yellowButton, whiteButton, cyanButton, greenButton, magentaButton, orangeButton, pinkButton, lightgrayButton, grayButton, darkgrayButton;
+    private JToggleButton brushButton, blackButton, redButton, blueButton, yellowButton, whiteButton, cyanButton, greenButton, magentaButton, orangeButton, pinkButton, lightgrayButton, grayButton, darkgrayButton;
     private boolean leftMouseButtonIsPressed;
     private File outputFile;
 
     //Konstanten für Werkzeuge, um Tippfehler z.B. bei den Action-commands zu vermeiden
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
-
 
     //Konstruktor
     public Frame (String frameTitel) {
@@ -95,9 +94,9 @@ public class Frame extends JFrame {
         newSameSizeItem.setActionCommand("newSameSize");
         newSameSizeItem.addActionListener(new ButtonAndTextFieldListener());
 
-        JMenuItem newOtherSizeItem = new JMenuItem("Neu (Blattgröße anpassen)");
+        JMenuItem newOtherSizeItem = new JMenuItem("Neu (Blattgroeße anpassen)");
         newOtherSizeItem.setIcon(new ImageIcon("icons/menu/Add16.gif"));
-        newOtherSizeItem.setAccelerator(KeyStroke.getKeyStroke('M', InputEvent.CTRL_DOWN_MASK));
+        newOtherSizeItem.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
         fileMenu.add(newOtherSizeItem);
         newOtherSizeItem.setActionCommand("newOtherSize");
         newOtherSizeItem.addActionListener(new ButtonAndTextFieldListener());
@@ -117,6 +116,7 @@ public class Frame extends JFrame {
 
         JMenuItem saveAsItem = new JMenuItem("Speichern unter");
         saveAsItem.setIcon(new ImageIcon("icons/menu/save16.gif"));
+        saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
         fileMenu.add(saveAsItem);
         saveAsItem.setActionCommand("saveAs");
         saveAsItem.addActionListener(new ButtonAndTextFieldListener());
@@ -127,26 +127,32 @@ public class Frame extends JFrame {
         closeItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem brushItem = new JMenuItem("Pinsel");
+        brushItem.setAccelerator(KeyStroke.getKeyStroke('P', InputEvent.ALT_DOWN_MASK));
         toolMenu.add(brushItem);
         brushItem.setActionCommand(brushString);
         brushItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem lineItem = new JMenuItem("Linie");
+        lineItem.setAccelerator(KeyStroke.getKeyStroke('L', InputEvent.ALT_DOWN_MASK));
         toolMenu.add(lineItem);
         lineItem.setActionCommand(lineString);
         lineItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem rectangleItem = new JMenuItem("Viereck");
+        rectangleItem.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.ALT_DOWN_MASK));
         toolMenu.add(rectangleItem);
         rectangleItem.setActionCommand(rectangleString);
         rectangleItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem ellipseItem = new JMenuItem("Ellipse");
+        ellipseItem.setAccelerator(KeyStroke.getKeyStroke('E', InputEvent.ALT_DOWN_MASK));
         toolMenu.add(ellipseItem);
         ellipseItem.setActionCommand(ellipseString);
         ellipseItem.addActionListener(new ButtonAndTextFieldListener());
 
         JMenuItem eraserItem = new JMenuItem("Radierer");
+        //Alt+X wurde gewählt, weil Alt+R von Windows abgefangen wird und nicht funktioniert
+        eraserItem.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.ALT_DOWN_MASK));
         toolMenu.add(eraserItem);
         eraserItem.setActionCommand(eraserString);
         eraserItem.addActionListener(new ButtonAndTextFieldListener());
@@ -162,31 +168,64 @@ public class Frame extends JFrame {
         //ButtonGroup erstellt, um dem Anwender das ausgewählte Tool anzuzeigen
         toolBar.addSeparator(new Dimension(20,100));
         toolGroup = new ButtonGroup();
-        createButton("icons/tools/brush.png", VK_P, brushString, "Pinsel", false, true);
-        createButton("icons/tools/linie.gif", VK_L, lineString, "Linie", false, false);
-        createButton("icons/tools/rechteck.gif", VK_V, rectangleString, "Viereck", false, false);
-        createButton("icons/tools/ellipse.gif", VK_E, ellipseString, "Ellipse", false, false);
-        createButton("icons/tools/eraser.png", VK_R, eraserString, "Radierer", false, false);
+        brushButton = createButton("icons/tools/brush.png", VK_P, brushString, "Pinsel (Alt+P)", false, true);
+        createButton("icons/tools/linie.gif", VK_L, lineString, "Linie (Alt+L)", false, false);
+        createButton("icons/tools/rechteck.gif", VK_V, rectangleString, "Viereck (Alt+V)", false, false);
+        createButton("icons/tools/ellipse.gif", VK_E, ellipseString, "Ellipse (Alt+E)", false, false);
+        createButton("icons/tools/eraser.png", VK_X, eraserString, "Radierer (Alt+X)", false, false);
         toolBar.addSeparator(new Dimension(20,100));
 
         //Bereich für die Strichstärke, Erzeugen eines neuen Panels mit BorderLayout
         JPanel strokePanel = new JPanel();
-        strokePanel.setLayout(new BorderLayout());
+        strokePanel.setLayout(new GridLayout(0,1, 0, 2));
         //Festlegen der Größe des Panels
-        strokePanel.setMaximumSize(new Dimension(50,40));
+        strokePanel.setMaximumSize(new Dimension(50,90));
         //Erstellen der Überschrift
-        JLabel strokeLabel = new JLabel("Stärke");
-        strokeLabel.setHorizontalAlignment(JLabel.CENTER);
+        JLabel strokeLabel1 = new JLabel("Strich-");
+        strokeLabel1.setHorizontalAlignment(JLabel.CENTER);
+        JLabel strokeLabel2 = new JLabel("breite");
+        strokeLabel2.setHorizontalAlignment(JLabel.CENTER);
         //Erstellen des Textfeldes zum Eingeben der Strichstärke
-        strokeField = new JTextField("5.0");
-        strokeField.setToolTipText("Strichdicke in Pixeln");
+        strokeField = new JTextField("5,0");
+        strokeField.setToolTipText("Strichbreite in Pixeln (Alt+D");
         strokeField.setHorizontalAlignment(JTextField.CENTER);
         //Hinzufügen des ActionCommand und des ActionListener
         strokeField.setActionCommand("stroke");
         strokeField.addActionListener(new ButtonAndTextFieldListener());
+        //Standardmäßig ist das Textfeld nicht fokussierbar, um den Cursor im Feld nicht anzuzeigen und die Bearbeitung aus Versehen zu verhindern
+        strokeField.setFocusable(false);
+        //Anonyme Klasse zum Fokussieren des Textfeldes beim Klick auf das Textfeld
+        strokeField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                strokeField.setFocusable(true);
+                strokeField.grabFocus();
+            }
+        });
+        //Keybinding um das Textfeld mit der Tastatur aktivieren zu können
+        InputMap inputMap = strokeField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = strokeField.getActionMap();
+        KeyStroke altD = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_DOWN_MASK);
+        inputMap.put(altD, "focusStrokeField");
+        actionMap.put("focusStrokeField", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                strokeField.setFocusable(true);
+                strokeField.grabFocus();
+            }
+        });
+        //Bestätigungsbutton, um Strichdicke mit der Maus bestätigen zu können
+        JButton confirmStroke = new JButton("OK");
+        confirmStroke.setActionCommand("stroke");
+        confirmStroke.addActionListener(new ButtonAndTextFieldListener());
+        confirmStroke.setFont(new Font("Arial", Font.BOLD, 11));
+        confirmStroke.setFocusable(false);
+        //confirmStroke.setPreferredSize(new Dimension(20,30));
         //Hinzufügen zur Toolbar und Abstandshalter
-        strokePanel.add(strokeLabel, BorderLayout.NORTH);
-        strokePanel.add(strokeField, BorderLayout.CENTER);
+        strokePanel.add(strokeLabel1);
+        strokePanel.add(strokeLabel2);
+        strokePanel.add(strokeField);
+        strokePanel.add(confirmStroke);
         toolBar.add(strokePanel);
         toolBar.addSeparator(new Dimension(20,100));
 
@@ -196,19 +235,19 @@ public class Frame extends JFrame {
         colorPanel = new JPanel();
         colorPanel.setLayout(new GridLayout(3,5));
         colorPanel.setMaximumSize(new Dimension(180,150));
-        blackButton = createButton("icons/colors/black.jpg", 0, "black", "schwarz", true, true);
-        redButton = createButton("icons/colors/red.jpg", 0, "red", "rot", true, false);
-        blueButton = createButton("icons/colors/blue.jpg", 0, "blue", "blau", true, false);
-        yellowButton = createButton("icons/colors/yellow.jpg", 0, "yellow", "gelb", true, false);
-        whiteButton = createButton("icons/colors/white.jpg", 0, "white", "weiß", true, false);
-        cyanButton = createButton("icons/colors/cyan.jpg", 0, "cyan", "cyan", true, false);
-        greenButton = createButton("icons/colors/green.jpg", 0, "green", "grün", true, false);
-        magentaButton= createButton("icons/colors/magenta.jpg", 0, "magenta", "magenta", true, false);
-        orangeButton= createButton("icons/colors/orange.jpg", 0, "orange", "orange", true, false);
-        pinkButton = createButton("icons/colors/pink.jpg", 0, "pink", "pink", true, false);
-        lightgrayButton = createButton("icons/colors/lightgray.jpg", 0, "lightgray", "hellgrau", true, false);
-        grayButton = createButton("icons/colors/gray.jpg", 0, "gray", "grau", true, false);
-        darkgrayButton = createButton("icons/colors/darkgray.jpg", 0, "darkgray", "dunkelgrau", true, false);
+        blackButton = createButton("icons/colors/black.jpg", VK_1, "black", "schwarz (Alt+1)", true, true);
+        redButton = createButton("icons/colors/red.jpg", VK_2, "red", "rot (Alt+2)", true, false);
+        blueButton = createButton("icons/colors/blue.jpg", VK_3, "blue", "blau (Alt+3)", true, false);
+        yellowButton = createButton("icons/colors/yellow.jpg", VK_4, "yellow", "gelb (Alt+4)", true, false);
+        whiteButton = createButton("icons/colors/white.jpg", VK_5, "white", "weiß (Alt+5)", true, false);
+        cyanButton = createButton("icons/colors/cyan.jpg", VK_6, "cyan", "cyan (Alt+6)", true, false);
+        greenButton = createButton("icons/colors/green.jpg", VK_7, "green", "grün (Alt+7)", true, false);
+        magentaButton= createButton("icons/colors/magenta.jpg", VK_8, "magenta", "magenta (Alt+8)", true, false);
+        orangeButton= createButton("icons/colors/orange.jpg", VK_9, "orange", "orange (Alt+9)", true, false);
+        pinkButton = createButton("icons/colors/pink.jpg", VK_0, "pink", "pink (Alt+0)", true, false);
+        lightgrayButton = createButton("icons/colors/lightgray.jpg", VK_NUMPAD1, "lightgray (Alt+NUMPAD1)", "hellgrau", true, false);
+        grayButton = createButton("icons/colors/gray.jpg", VK_NUMPAD2, "gray", "grau (Alt+NUMPAD2)", true, false);
+        darkgrayButton = createButton("icons/colors/darkgray.jpg", VK_NUMPAD3, "darkgray (Alt+NUMPAD3)", "dunkelgrau", true, false);
         toolBar.add(colorPanel);
 
         this.add(toolBar, BorderLayout.NORTH);
@@ -216,6 +255,7 @@ public class Frame extends JFrame {
 
     //Eigene Methode um Buttons vollständig zu implementieren
     //jeder Button kann bekommen: Bild, Shortcut, Tooltip, ActionCommand, Action´Listener
+    //Button sind nicht fokussierbar, um das Bedienen mit den Pfeiltasten zu verhindern
     //setSelected wird verwendet, um die Standardtools zu Beginn auszuwählen
     private JToggleButton createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip, boolean isColor, boolean select) {
         JToggleButton button = new JToggleButton();
@@ -231,6 +271,7 @@ public class Frame extends JFrame {
             toolGroup.add(button);
             toolBar.add(button);
         }
+        button.setFocusable(false);
         button.setSelected(select);
         button.setActionCommand(actionCommand);
         button.addActionListener(new ButtonAndTextFieldListener());
@@ -283,24 +324,32 @@ public class Frame extends JFrame {
 
             //Funktion zum Setzen der Strichstärke
              if (e.getActionCommand().equals("stroke")) {
-                try {
+                String strokeStringWithPoint;
+                String strokeStringWithKomma;
+                 try {
                     //Einlesen der Strichstärke
-                    String strokeString = strokeField.getText();
+                    strokeStringWithKomma = strokeField.getText();
                     //Überprüfung, ob Strichstärke eine Zahl ist
-                    if (!strokeString.matches("^-?(?:\\d+\\.?\\d*|\\.\\d+)$")) throw new IOException("Ungültige Eingabe: Es muss eine Zahl eingegeben werden!");
-                    float stroke = parseFloat(strokeString);
+                    if (!strokeStringWithKomma.matches("^-?(?:\\d+,?\\d*|\\.\\d+)$")) throw new IOException("Ungültige Eingabe: Es muss eine Zahl eingegeben werden!");
+                    //tauschen von eingegebenen Komma zu Punkt
+                    strokeStringWithPoint = strokeStringWithKomma.replace(',', '.');
+                    float stroke = parseFloat(strokeStringWithPoint);
                     //Überprüfung, ob Strichstärke größer als null ist
                     if (stroke <= 0) throw new IOException("Ungültige Eingabe: Der Wert muss größer als Null sein!");
                     //Ändern der Strichstärke
                     paintPanel.setStroke(stroke);
-                    //Neuerzeugen des Textes, damit konstant wenigstens eine Nachkommastelle angezeigt wird z. B. Eingabe 8 und Anzeige 8.0
-                    strokeField.setText("" + paintPanel.getStroke());
+                    //Neuerzeugen des Textes, damit konstant wenigstens eine Nachkommastelle angezeigt wird z. B. Eingabe 8 und Anzeige 8,0
+                    strokeStringWithPoint = "" + paintPanel.getStroke();
+                    strokeStringWithKomma = strokeStringWithPoint.replace("." , ",");
+                    strokeField.setText(strokeStringWithKomma);
                 } catch (IOException ex) {
                     //zurücksetzen des Textfeldes auf ursprüngliche Strichdicke
-                    strokeField.setText("" + paintPanel.getStroke());
+                     strokeStringWithPoint = "" + paintPanel.getStroke();
+                     strokeStringWithKomma = strokeStringWithPoint.replace("." , ",");
+                     strokeField.setText(strokeStringWithKomma);
                 }
-                 //Fokus aus dem Textfeld entfernen, damit nicht aus Versehen weitergeschrieben wird
-                 strokeField.transferFocus();
+                 //Fokussierbarkeit des Textfeldes entfernen, damit nicht aus Versehen weitergeschrieben wird
+                 strokeField.setFocusable(false);
             }
 
             //Funktion zum Setzen der Farbe, nur wenn ein anderes Tool als der Radierer ausgewählt ist, ansonsten Aufheben der Auswahl
@@ -325,6 +374,10 @@ public class Frame extends JFrame {
                 int confirmation = JOptionPane.showConfirmDialog(paintPanel, "Wollen Sie wirklich ein neues Blatt erstellen? Ungespeicherter Fortschritt geht verloren.", "Neues Blatt", JOptionPane.YES_NO_OPTION);
                 if (confirmation == JOptionPane.YES_OPTION) {
                     paintPanel.newPanel();
+                    //Zurücksetzen der Buttons und des Textfeldes
+                    strokeField.setText("5,0");
+                    brushButton.setSelected(true);
+                    blackButton.setSelected(true);
                     //zurücksetzen des Speicherpfades
                     outputFile = null;
                 }
@@ -345,6 +398,10 @@ public class Frame extends JFrame {
                         if (width <= 0 || height <= 0) throw new IOException("Ungültige Eingabe: Die Werte müssen größer als Null sein!");
                         //Erstellen der neuen Zeichenfläche
                         paintPanel.newPanel(width, height);
+                        //Zurücksetzen der Buttons und des Textfeldes
+                        strokeField.setText("5,0");
+                        brushButton.setSelected(true);
+                        blackButton.setSelected(true);
                         //zurücksetzen des Speicherpfades
                         outputFile = null;
                     } catch (IOException ex) {
