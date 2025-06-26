@@ -107,27 +107,36 @@ public class PaintPanel extends JPanel {
 
     //Methode zum Zeichnen von Linien
     public void line (Point actualMousePosition) {
-        //Zeichnen der Linie
-        g2Image.drawLine(lastMousePosition.x, lastMousePosition.y, actualMousePosition.x, actualMousePosition.y);
-        repaint();
+        //gezeichnet wird nur, wenn der Startpunkt ungleich dem Endpunkt ist oder der Pinsel ausgewählt ist
+        if (tool.equals("brush") || (lastMousePosition.x != actualMousePosition.x & lastMousePosition.y != actualMousePosition.y)) {
+            //Zeichnen der Linie
+            g2Image.drawLine(lastMousePosition.x, lastMousePosition.y, actualMousePosition.x, actualMousePosition.y);
+            repaint();
+        }
     }
 
     //Methode zum Zeichnen von Rechtecken
     public void rectangle (Point actualMousePosition) {
-        //Berechnung der Abmaße des Rechtecks
-        int [] rectangle = checkOrientation(lastMousePosition, actualMousePosition);
-        //Zeichnen des Rechtecks
-        g2Image.drawRect(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
-        repaint();
+        //gezeichnet wird nur, wenn der Startpunkt ungleich dem Endpunkt ist
+        if (lastMousePosition.x != actualMousePosition.x & lastMousePosition.y != actualMousePosition.y) {
+            //Berechnung der Abmaße des Rechtecks
+            int [] rectangle = checkOrientation(lastMousePosition, actualMousePosition);
+            //Zeichnen des Rechtecks
+            g2Image.drawRect(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
+            repaint();
+        }
     }
 
     //Methode zum Zeichnen von Ellipsen
     public void ellipse (Point actualMousePosition) {
-        //Berechnung der Abmaße der Ellipse
-        int [] ellipse = checkOrientation(lastMousePosition, actualMousePosition);
-        //Zeichnen der Ellipse
-        g2Image.drawOval(ellipse[0], ellipse[1], ellipse[2], ellipse[3]);
-        repaint();
+        //gezeichnet wird nur, wenn der Startpunkt ungleich dem Endpunkt ist
+        if (lastMousePosition.x != actualMousePosition.x & lastMousePosition.y != actualMousePosition.y) {
+            //Berechnung der Abmaße der Ellipse
+            int [] ellipse = checkOrientation(lastMousePosition, actualMousePosition);
+            //Zeichnen der Ellipse
+            g2Image.drawOval(ellipse[0], ellipse[1], ellipse[2], ellipse[3]);
+            repaint();
+        }
     }
 
     //Methode zum Radieren

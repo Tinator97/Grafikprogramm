@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import static java.awt.event.KeyEvent.*;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
@@ -23,10 +22,9 @@ public class Frame extends JFrame {
     private JPanel colorPanel;
     private JTextField strokeField;
     private ButtonGroup colorGroup, toolGroup;
-    private JToggleButton brushButton, blackButton, redButton, blueButton, yellowButton, whiteButton, cyanButton, greenButton, magentaButton, orangeButton, pinkButton, lightgrayButton, grayButton, darkgrayButton;
+    private JToggleButton brushButton, lineButton, rectangleButton, ellipseButton, eraserButton, blackButton, redButton, blueButton, yellowButton, whiteButton, cyanButton, greenButton, magentaButton, orangeButton, pinkButton, lightgrayButton, grayButton, darkgrayButton;
     private boolean leftMouseButtonIsPressed;
     private File outputFile;
-
     //Konstanten für Werkzeuge, um Tippfehler z.B. bei den Action-commands zu vermeiden
     private final String brushString = "brush", lineString = "line", rectangleString = "rectangle", ellipseString = "ellipse", eraserString = "eraser";
 
@@ -34,19 +32,16 @@ public class Frame extends JFrame {
     public Frame (String frameTitel) {
         //Erstellen des Fensters
         super(frameTitel);
-
         //Größe des Fensters - Ermitteln der Auflösung des Betriebssystems
         GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         //Setzen der Standard-Fenstergröße auf die Hälfte der Bildschirmgröße
         this.setSize(graphicsDevice.getDisplayMode().getWidth()/2, graphicsDevice.getDisplayMode().getHeight()/2);
         //Maximiert starten
         this.setExtendedState(MAXIMIZED_BOTH);
-
         //Layout des Fensters
         this.setLayout(new BorderLayout());
         //Beenden des Programms beim Schließen
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 
         //Erzeugen der Zeichenfläche mit Standardgröße
         paintPanel = new PaintPanel(1600, 900);
@@ -76,14 +71,12 @@ public class Frame extends JFrame {
     }
 
     //Erstellen der MenuBar mit den einzelnen Untermenüs und Items inkl. Symbolen und ShortCuts mit lokalen Variablen
-    //Für die Items werden gesetzt: Text, Shortcut, Bild, ActionCommand; ActionListener werden erstellt
+    //Für die Items werden gesetzt: Text, Shortcut, Icon, ActionCommand; ActionListener werden erstellt
     //mit F10 kann die MenuBar auch mit der Tastatur gesteuert werden
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-
         JMenu fileMenu = new JMenu("Datei");
         menuBar.add(fileMenu);
-
         JMenu toolMenu = new JMenu("Werkzeuge");
         menuBar.add(toolMenu);
 
@@ -160,19 +153,18 @@ public class Frame extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    // Erstellen der SymbolBar mit den einzelnen Buttons für Werkzeuge inkl. Symbolen und ShortCuts
+    // Erstellen der SymbolBar mit den einzelnen Buttons für Werkzeuge inkl. Symbolen und Hotkeys
     private void createSymbolBar() {
         toolBar = new JToolBar();
-
-        //Erzeugen der Buttons für die Tools. Shortcuts orientieren sich an den deutschen Begriffen. Abstandhalter vor und nach den Tools
+        //Erzeugen der Buttons für die Tools. Hotkeys orientieren sich an den deutschen Begriffen. Abstandhalter vor und nach den Tools
         //ButtonGroup erstellt, um dem Anwender das ausgewählte Tool anzuzeigen
         toolBar.addSeparator(new Dimension(20,100));
         toolGroup = new ButtonGroup();
         brushButton = createButton("icons/tools/brush.png", VK_P, brushString, "Pinsel (Alt+P)", false, true);
-        createButton("icons/tools/linie.gif", VK_L, lineString, "Linie (Alt+L)", false, false);
-        createButton("icons/tools/rechteck.gif", VK_V, rectangleString, "Viereck (Alt+V)", false, false);
-        createButton("icons/tools/ellipse.gif", VK_E, ellipseString, "Ellipse (Alt+E)", false, false);
-        createButton("icons/tools/eraser.png", VK_X, eraserString, "Radierer (Alt+X)", false, false);
+        lineButton = createButton("icons/tools/linie.gif", VK_L, lineString, "Linie (Alt+L)", false, false);
+        rectangleButton = createButton("icons/tools/rechteck.gif", VK_V, rectangleString, "Viereck (Alt+V)", false, false);
+        ellipseButton = createButton("icons/tools/ellipse.gif", VK_E, ellipseString, "Ellipse (Alt+E)", false, false);
+        eraserButton = createButton("icons/tools/eraser.png", VK_X, eraserString, "Radierer (Alt+X)", false, false);
         toolBar.addSeparator(new Dimension(20,100));
 
         //Bereich für die Strichstärke, Erzeugen eines neuen Panels mit BorderLayout
@@ -220,7 +212,6 @@ public class Frame extends JFrame {
         confirmStroke.addActionListener(new ButtonAndTextFieldListener());
         confirmStroke.setFont(new Font("Arial", Font.BOLD, 11));
         confirmStroke.setFocusable(false);
-        //confirmStroke.setPreferredSize(new Dimension(20,30));
         //Hinzufügen zur Toolbar und Abstandshalter
         strokePanel.add(strokeLabel1);
         strokePanel.add(strokeLabel2);
@@ -245,17 +236,17 @@ public class Frame extends JFrame {
         magentaButton= createButton("icons/colors/magenta.jpg", VK_8, "magenta", "magenta (Alt+8)", true, false);
         orangeButton= createButton("icons/colors/orange.jpg", VK_9, "orange", "orange (Alt+9)", true, false);
         pinkButton = createButton("icons/colors/pink.jpg", VK_0, "pink", "pink (Alt+0)", true, false);
-        lightgrayButton = createButton("icons/colors/lightgray.jpg", VK_NUMPAD1, "lightgray (Alt+NUMPAD1)", "hellgrau", true, false);
+        lightgrayButton = createButton("icons/colors/lightgray.jpg", VK_NUMPAD1, "lightgray", "hellgrau (Alt+NUMPAD1)", true, false);
         grayButton = createButton("icons/colors/gray.jpg", VK_NUMPAD2, "gray", "grau (Alt+NUMPAD2)", true, false);
-        darkgrayButton = createButton("icons/colors/darkgray.jpg", VK_NUMPAD3, "darkgray (Alt+NUMPAD3)", "dunkelgrau", true, false);
+        darkgrayButton = createButton("icons/colors/darkgray.jpg", VK_NUMPAD3, "darkgray", "dunkelgrau (Alt+NUMPAD3)", true, false);
         toolBar.add(colorPanel);
 
         this.add(toolBar, BorderLayout.NORTH);
     }
 
     //Eigene Methode um Buttons vollständig zu implementieren
-    //jeder Button kann bekommen: Bild, Shortcut, Tooltip, ActionCommand, Action´Listener
-    //Button sind nicht fokussierbar, um das Bedienen mit den Pfeiltasten zu verhindern
+    //jeder Button kann bekommen: Icon, Hotkey, Tooltip, ActionCommand, ActionListener
+    //Button sind nicht fokussierbar, um das Selektieren (das Hervorheben) mit den Pfeiltasten zu verhindern.
     //setSelected wird verwendet, um die Standardtools zu Beginn auszuwählen
     private JToggleButton createButton(String imageIconFilename, int mnemonic, String actionCommand, String tooltip, boolean isColor, boolean select) {
         JToggleButton button = new JToggleButton();
@@ -281,7 +272,7 @@ public class Frame extends JFrame {
     //Klasse zum Ausführen von Befehlen nach Knopfdruck bzw. beim Bearbeiten von Textfeldern
     class ButtonAndTextFieldListener implements ActionListener {
         //Klassenvariable für das Standardverzeichnis für gespeicherte Bilder
-        Path savedPictures = Path.of("saved Pictures");
+        Path savedPictures = Path.of("savedPictures");
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -307,12 +298,25 @@ public class Frame extends JFrame {
             }
 
             //Funktionen, um das Werkzeug auszuwählen
-            if (e.getActionCommand().equals(brushString)) paintPanel.setTool(brushString);
-            if (e.getActionCommand().equals(lineString)) paintPanel.setTool(lineString);
-            if (e.getActionCommand().equals(rectangleString)) paintPanel.setTool(rectangleString);
-            if (e.getActionCommand().equals(ellipseString)) paintPanel.setTool(ellipseString);
+            if (e.getActionCommand().equals(brushString)) {
+                paintPanel.setTool(brushString);
+                brushButton.setSelected(true);
+            }
+            if (e.getActionCommand().equals(lineString)) {
+                paintPanel.setTool(lineString);
+                lineButton.setSelected(true);
+            }
+            if (e.getActionCommand().equals(rectangleString)) {
+                paintPanel.setTool(rectangleString);
+                rectangleButton.setSelected(true);
+            }
+            if (e.getActionCommand().equals(ellipseString)) {
+                paintPanel.setTool(ellipseString);
+                ellipseButton.setSelected(true);
+            }
             //Radierer darf nur gewählt werden, wenn er noch nicht ausgewählt ist, sonst wird die vorher gewählte Farbe mit weiß überschrieben
             if (e.getActionCommand().equals(eraserString) && !paintPanel.getTool().equals(eraserString)) {
+                eraserButton.setSelected(true);
                 //Speichern der aktuellen Farbe
                 paintPanel.setLastColor(paintPanel.getColor());
                 //Setzen der aktuellen Farbe auf Weiß, da der Radierer eigentlich ein weißer Pinsel ist
